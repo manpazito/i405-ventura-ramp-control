@@ -31,7 +31,7 @@
 \renewcommand{\arraystretch}{1.12}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \input{submission}
-\newcommand{\ntests}{135} % automated tests in tests/ (uv run pytest)
+\newcommand{\ntests}{103} % automated tests in tests/ (uv run pytest)
 \newcommand{\vehh}{\,veh/h}
 \newcommand{\ci}[3]{$#1$ [$#2$, $#3$]} % mean [95 % interval]
 
@@ -1050,14 +1050,17 @@ Figures of this report & \texttt{scripts/mid\_report\_figures.py} & \texttt{test
 
 \section{AI use and verification}
 
-The code, the tests, the figures and the draft of this report were produced with an AI
-coding assistant (Claude Code, Anthropic), working from my requests. I chose the site
-and the question, supplied the AutoCAD sketch, confirmed the lane layout and the
-position of the meter line, and asked for each change of direction: the study of ramp
-against mainline demand, the check of ALINEA against the lecture material, the
-calibration, and the one-factor comparison of the rules. The assistant drafted the
-designs and the predictions; I accepted them before the runs, and the repository records
-that they were not edited afterwards. The decisions and their limits are logged in
+I initialized and scaffolded the project myself: the repository, its structure and
+environment, the choice of site and question, and the AutoCAD sketch of the ramp, from
+which I confirmed the lane layout and the position of the meter line. I used an AI
+coding assistant, Claude (Claude Code, Anthropic), mainly for implementation: working
+from my requests, it automated the rest of the work, including writing the code, the
+tests and the figures and drafting the study designs, the predictions and this report,
+while I fact-checked and verified the results as the work went on. I asked for each
+change of direction: the study of ramp against mainline demand, the check of ALINEA
+against the lecture material, the calibration, and the one-factor comparison of the
+rules. The predictions were accepted before the runs, and the repository records that
+they were not edited afterwards. The decisions and their limits are logged in
 \texttt{docs/decisions.md}, and each study has a record under \texttt{experiments/}
 with its predictions, results and contradicted predictions.
 
