@@ -26,18 +26,18 @@ intervals, figures, the configuration and file hashes.
 
 ## Contents
 
-| Part | Record | Command |
-| --- | --- | --- |
-| Data: PeMS station data, screened for observed intervals | [data/README.md](data/README.md) | `uv run arm-pems` (needs a PeMS login) |
-| Site: what limits flow at the ramp | [ramp_mainline_mix.md](experiments/ramp_mainline_mix.md#site-characterization-pems-observed) | `uv run python scripts/bottleneck_check.py` |
-| Model: IDM, merging, meter, loop detectors, four rules | [site record](docs/i405_ablation.md), [engine](docs/micro_demo.md), [equations](docs/mathematical_model/) | `uv run arm-micro` (engine test scenario) |
-| Calibration, checked on held-out days | [calibration.md](experiments/calibration.md) | `uv run python scripts/calibrate_fd.py` |
-| Main study: four rules, one-factor changes | [rule_ablation.md](experiments/rule_ablation.md) | see Quick start |
-| Ramp and mainline demand scaled separately | [ramp_mainline_mix.md](experiments/ramp_mainline_mix.md) | `uv run arm-ablation --config configs/i405_mix.yaml` |
-| Which driver trait matters | [driver_traits.md](experiments/driver_traits.md) | `uv run arm-study --config configs/i405_driver_traits.yaml` |
-| Driver populations (before calibration) | [driver_populations.md](experiments/driver_populations.md) | `uv run arm-drivers` |
-| Queue estimate and forecast | [estimate_and_forecast.md](experiments/estimate_and_forecast.md) | `uv run python scripts/forecast_check.py` |
-| Decisions, dated | [decisions.md](docs/decisions.md) | |
+| Part                                                     | Record                                                                                                 | Command                                                       |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| Data: PeMS station data, screened for observed intervals | [data/README.md](data/README.md)                                                                        | `uv run arm-pems` (needs a PeMS login)                      |
+| Site: what limits flow at the ramp                       | [ramp_mainline_mix.md](experiments/ramp_mainline_mix.md#site-characterization-pems-observed)            | `uv run python scripts/bottleneck_check.py`                 |
+| Model: IDM, merging, meter, loop detectors, four rules   | [site record](docs/i405_ablation.md), [engine](docs/micro_demo.md), [equations](docs/mathematical_model/) | `uv run arm-micro` (engine test scenario)                   |
+| Calibration, checked on held-out days                    | [calibration.md](experiments/calibration.md)                                                            | `uv run python scripts/calibrate_fd.py`                     |
+| Main study: four rules, one-factor changes               | [rule_ablation.md](experiments/rule_ablation.md)                                                        | see Quick start                                               |
+| Ramp and mainline demand scaled separately               | [ramp_mainline_mix.md](experiments/ramp_mainline_mix.md)                                                | `uv run arm-ablation --config configs/i405_mix.yaml`        |
+| Which driver trait matters                               | [driver_traits.md](experiments/driver_traits.md)                                                        | `uv run arm-study --config configs/i405_driver_traits.yaml` |
+| Driver populations (before calibration)                  | [driver_populations.md](experiments/driver_populations.md)                                              | `uv run arm-drivers`                                        |
+| Queue estimate and forecast                              | [estimate_and_forecast.md](experiments/estimate_and_forecast.md)                                        | `uv run python scripts/forecast_check.py`                   |
+| Decisions, dated                                         | [decisions.md](docs/decisions.md)                                                                       |                                                               |
 
 Code: `src/adaptive_ramp_metering/` (`simulation/micro.py` engine, `control/metering.py`
 rules, `simulation/ablation.py` site scenario, `simulation/drivers.py` case studies,
@@ -53,8 +53,7 @@ cd docs/mid_report && latexmk -pdf mid_report.tex
 
 The tables come from the commands above: the bottleneck check (Table 5), calibration
 step 1 (Table 6), `arm-study --config configs/i405_validation.yaml` then
-`scripts/validation_table.py` (Figure 5), `arm-study --config configs/i405_ablation.yaml
---analytic` (Table 7), the main study (Table 8, Figures 7–9; run
+`scripts/validation_table.py` (Figure 5), `arm-study --config configs/i405_ablation.yaml --analytic` (Table 7), the main study (Table 8, Figures 7–9; run
 `20261119T200447_267513Z`), the mix study (Figure 11, run on the model before
 calibration) and the forecast check (Section 3.8). Team number and repository link:
 `docs/mid_report/submission.tex`.
