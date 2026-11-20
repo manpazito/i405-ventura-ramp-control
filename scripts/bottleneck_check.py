@@ -2,9 +2,10 @@
 
 Lane-level redo of the mid-report's station-level check (`scripts/downstream_check.py`
 on branch `mid-report`) for the ramp/mainline mix study
-(experiments/ramp_mainline_mix.md). It reads the raw PeMS Station 5-Minute archives kept
-by `arm-pems scan`, because Royal Ridge lies outside the corridor extract, and uses
-observed lanes only.
+(experiments/ramp_mainline_mix.md). It reads PeMS Station 5-Minute archives, because Royal Ridge lies outside the
+corridor extract, and uses observed lanes only. By default it reads the copies in
+`data/interim/pems/bottleneck/` (the eight archives cut to the six stations used,
+rows unchanged; see data/README.md); the full archives give the same table.
 
     uv run python scripts/bottleneck_check.py
     uv run python scripts/bottleneck_check.py --raw data/raw/pems --dates 2022-10-11
@@ -150,7 +151,9 @@ def check_day(raw: Path, date: str) -> dict:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--raw", type=Path, default=Path("data/raw/pems"))
+    parser.add_argument(
+        "--raw", type=Path, default=Path("data/interim/pems/bottleneck")
+    )
     parser.add_argument("--dates", nargs="+", default=DAYS)
     parser.add_argument(
         "--out", type=Path, default=Path("data/processed/pems/bottleneck_check.csv")

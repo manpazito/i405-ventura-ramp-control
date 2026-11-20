@@ -43,3 +43,4 @@ htmlcov/
 /docs/mid_report/*.out
 /docs/mid_report/*.fls
 /docs/mid_report/*.fdb_latexmk
+*.synctex.gz
