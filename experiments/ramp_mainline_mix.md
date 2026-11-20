@@ -304,7 +304,8 @@ the paper.
 Run folder `results/mix-study/20261119T182607_517036Z` (generated, not in Git): 960 runs,
 command as specified, on the model before calibration (`T` = 1 s, `delta` = 4) with
 ALINEA's set value at 0.26 (amendment above); 10:26 to 11:51 PST on 11 processes. The
-code that ran is commit `53ead2b` (`git_revision` in `run.json`); the file hashes in
+code that ran is commit `53ead2b` of the development history, which is not in this
+repository (`git_revision` in `run.json`); the file hashes in
 `run.json` were taken at the end of the run, after later edits to the working tree, and
 do not match that commit. Every table below comes from the CSV files of the folder.
 

@@ -9,8 +9,8 @@ the critical occupancy, 0.26; a test of 30 runs found no counted difference betw
 two settings, and this study was not rerun.
 
 Note added 2026-11-19 (D023): every number below comes from the model **before
-calibration** (`a` = `b` = 2 m/s², `T` = 1 s, exponent 4; `configs/i405.yaml` at commit
-b1abc30; the resolved settings are also stored in each run folder's `config.yaml`).
+calibration** (`a` = `b` = 2 m/s², `T` = 1 s, exponent 4; the resolved settings are stored in each
+run folder's `config.yaml`).
 Running `uv run arm-drivers` now uses the calibrated site and does not reproduce them.
 On the calibrated model, two of these populations are cases of the
 [rule ablation](rule_ablation.md) (`drivers_normal`, `drivers_field`), and which trait

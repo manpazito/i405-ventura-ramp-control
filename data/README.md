@@ -31,6 +31,7 @@ committed although the folders are otherwise ignored:
 | `interim/pems/station_5min_2022_10_{03,10,11,12,14,24,25,28}.csv`: the corridor's stations, one observed weekday each, as written by `arm-pems scan` | 5.4 MB | the site scenario and every study (`configs/i405*.yaml`), `scripts/calibrate_fd.py`, `scripts/mid_report_figures.py` |
 | `interim/pems/bottleneck/d07_text_station_5min_2022_10_*.txt.gz`: the same eight District 7 daily archives cut to the six stations the check uses (765171, 777066, 717816, 764754, 717807, 716744), rows unchanged | 0.5 MB | `scripts/bottleneck_check.py` (gives the same table as the full archives) |
 | `ramp_geometry/i405_onramp.pdf`, `ramp_geometry/i405sb_geometry.json`: the traced ramp geometry | 0.7 MB | `scripts/measure_ramp_pdf.py`, `scripts/smooth_ramp_geometry.py` |
+| `ramp_geometry/i405_onramp.dwg`: the AutoCAD drawing the geometry was traced from | 4.3 MB | the source of the two files above |
 
 The cut-down archives were made with, for each date,
 `zcat raw/pems/d07_text_station_5min_<date>.txt.gz | awk -F, '$2==765171||$2==777066||$2==717816||$2==764754||$2==717807||$2==716744' | gzip -n`.

@@ -58,7 +58,7 @@ DIVERGING = LinearSegmentedColormap.from_list(
     "diverging", ["#1c5cab", "#f0efec", "#d03b3b"]
 )
 
-# The configuration before the calibration of D023 (configs/i405.yaml at commit b1abc30).
+# The configuration before the calibration of D023 (the values configs/i405.yaml had then).
 BEFORE = {
     "v0": 28.6,
     "idm": {"a_mps2": 2.0, "b_mps2": 2.0, "time_gap_s": 1.0, "s0_m": 2.0, "delta": 4},

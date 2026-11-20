@@ -180,7 +180,7 @@ D022), the lecture material and the cited papers.
 
 ## Results (2026-11-19)
 
-Run `results/rule-ablation/20261119T200447_267513Z`, code at commit `12f6a67`; the
+Run `results/rule-ablation/20261119T200447_267513Z`, code at commit `12f6a67` of the development history (not in this repository); the
 tables are copied to `docs/mid_report/data/rule_ablation/`. 1,400 runs, every one
 conserves vehicles, and no step has overlapping vehicles. The run was started before
 this section existed and the predictions above were not edited. Two notes on

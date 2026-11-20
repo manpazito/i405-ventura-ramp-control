@@ -1,7 +1,6 @@
 """Is the Ventura merge an active bottleneck, or inside a queue from downstream?
 
-Lane-level redo of the mid-report's station-level check (`scripts/downstream_check.py`
-on branch `mid-report`) for the ramp/mainline mix study
+Lane-level redo of the mid-report's station-level check (an earlier script, not kept) for the ramp/mainline mix study
 (experiments/ramp_mainline_mix.md). It reads PeMS Station 5-Minute archives, because Royal Ridge lies outside the
 corridor extract, and uses observed lanes only. By default it reads the copies in
 `data/interim/pems/bottleneck/` (the eight archives cut to the six stations used,

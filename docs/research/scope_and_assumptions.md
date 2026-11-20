@@ -54,7 +54,7 @@ shown; it does not mean a grader has accepted it.
 | CEE 281: a focused controller comparison, uncertainty analysis or ablation | D024, with D021 (ramp and mainline demand) and D019 (driver populations) | Met |
 | **One final pathway: CAV control, or traffic-signal control on the supplied isolated-intersection scaffold. "The final submission must include the selected CAV or signal implementation, not only this common TMC"; ramp metering is "a foundation exercise"** | Nothing in this repository | **Not met.** Traffic-signal control was chosen on 2026-11-19; the scaffold has not been obtained |
 | README with one reproducible run command, dependencies, inputs, expected outputs and known limits | [README](../../README.md) | Met |
-| Versioned code and scenario configurations | Git | **Not met in the main checkout:** the branch `main` has no commit and the repository has no remote. The mid-report rubric also asks for a repository link |
+| Versioned code and scenario configurations | Git | Met: <https://github.com/manpazito/i405-ventura-ramp-control>, linked in the mid-report |
 | Plots with axes, units and scenario labels | Figures written by `arm-ablation` and `arm-study` | Met |
 | Experiment record: prediction, change made, result, interpretation | `experiments/` | Met |
 | Source-to-design table; a concise AI-use and verification disclosure | [Literature record](literature_review.md); the "AI use and verification" section of the mid-report | Met; carry the disclosure into the final report |
