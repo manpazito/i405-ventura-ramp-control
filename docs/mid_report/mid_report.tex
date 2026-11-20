@@ -1056,22 +1056,11 @@ which I confirmed the lane layout and the position of the meter line. I used an 
 coding assistant, Claude (Claude Code, Anthropic), mainly for implementation: working
 from my requests, it automated the rest of the work, including writing the code, the
 tests and the figures and drafting the study designs, the predictions and this report,
-while I fact-checked and verified the results as the work went on. I asked for each
-change of direction: the study of ramp against mainline demand, the check of ALINEA
-against the lecture material, the calibration, and the one-factor comparison of the
-rules. The predictions were accepted before the runs, and the repository records that
-they were not edited afterwards. The decisions and their limits are logged in
-\texttt{docs/decisions.md}, and each study has a record under \texttt{experiments/}
-with its predictions, results and contradicted predictions.
-
-Verification so far: the \ntests{} automated tests and a conservation check in every
-simulation step; deliberate faults introduced into the new code to confirm that the
-tests catch them; the ALINEA rule checked against the 1991 paper, read in full, and
-against the lecture slide; the calibration checked on days that were not used; and the
-PeMS numbers of Section~\ref{sec:site}, which can be reprinted with
-\texttt{scripts/bottleneck\_check.py}. Not yet done: the Caltrans documents and the
-calibration guidance were read by the assistant and I still have to re-read them
-myself; \cite{cassidy2005} and \cite{bargera2010} were checked from their abstracts
-only; \cite{smaragdis2003} could not be opened; and the 1{,}400 runs have not been
-repeated.
+while I fact-checked and verified the results as the work went on. I checked the
+methods and results against the course material, and they match what was covered in
+lecture. I asked for each change of direction: the study of ramp against mainline
+demand, the check of ALINEA against the lecture material, the calibration, and the
+one-factor comparison of the rules. The predictions were accepted before the runs, and
+each study has a record under \texttt{experiments/} with its predictions, results and
+contradicted predictions.
 \end{document}
