@@ -1,0 +1,486 @@
+{
+  "dataset_id": "observed_pems_ventura_20221001_20221031_5min_v1",
+  "source_id": "pems_mainline+pems_ramp",
+  "agency": "Caltrans PeMS Data Clearinghouse, District 7 Station 5-Minute",
+  "data_origin": "observed (PeMS-imputed values retained and flagged)",
+  "coverage_local_dates": [
+    "2022-10-01",
+    "2022-10-31"
+  ],
+  "station_ids": [
+    716744,
+    717809,
+    717816,
+    764754,
+    765171,
+    765197,
+    777066
+  ],
+  "station_roles": {
+    "716744": {
+      "role": "on_ramp",
+      "label": "Ventura Blvd SB on-ramp"
+    },
+    "717816": {
+      "role": "mainline",
+      "label": "Ventura Blvd SB mainline"
+    },
+    "765197": {
+      "role": "off_ramp",
+      "label": "Ventura Blvd SB off-ramp",
+      "optional": true
+    },
+    "777066": {
+      "role": "upstream_mainline",
+      "label": "North of 101 SB mainline",
+      "optional": true
+    },
+    "765171": {
+      "role": "upstream_mainline",
+      "label": "Burbank 1 SB mainline",
+      "optional": true
+    },
+    "717809": {
+      "role": "downstream_mainline",
+      "label": "Valley Vista SB mainline",
+      "optional": true
+    },
+    "764754": {
+      "role": "downstream_mainline",
+      "label": "Woodcrest SB mainline",
+      "optional": true
+    }
+  },
+  "source_timezone": "America/Los_Angeles; source timestamp labels interval start",
+  "interval": "[start, end) 300 s",
+  "units": {
+    "count": "veh per 5 min (source Total Flow)",
+    "flow_veh_per_s": "count / 300",
+    "mean_speed_mps": "source Avg Speed mph * 0.44704; PeMS flow-weighted",
+    "occupancy_fraction": "source Avg Occupancy (fraction) unchanged",
+    "observed_fraction": "source % Observed / 100"
+  },
+  "quality_flag": "observed=100% observed; partially_observed; imputed=0% observed but value reported; missing=no value",
+  "output_file": "data/processed/pems/observed_pems_ventura_20221001_20221031_5min_v1.csv",
+  "output_sha256": "7c048ded349d0187e87aa73d33ed38c64ab7ecd62ee6c408d7a2e752e306aa4f",
+  "output_rows": 62496,
+  "source_files": [
+    {
+      "date": "2022-10-01",
+      "file_name": "d07_text_station_5min_2022_10_01.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=446922&dnode=Clearinghouse",
+      "bytes": "26823312",
+      "sha256": "b059ac3507171101a58818c59ecaa7b01a25146612749c0dcdc4c5530f970549",
+      "retrieved_at_utc": "2026-11-08T06:44:48+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-02",
+      "file_name": "d07_text_station_5min_2022_10_02.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=446987&dnode=Clearinghouse",
+      "bytes": "26464319",
+      "sha256": "379162764d645ce0a1263fb0a4d68c0acd53d86ba5bf193e16cff252b4a4fbd6",
+      "retrieved_at_utc": "2026-11-08T06:44:55+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-03",
+      "file_name": "d07_text_station_5min_2022_10_03.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447042&dnode=Clearinghouse",
+      "bytes": "27008503",
+      "sha256": "2ba653da3c233cefda5a524282856c48d98acb4a978d0539384c1b9e6e056b7d",
+      "retrieved_at_utc": "2026-11-08T06:34:41+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-04",
+      "file_name": "d07_text_station_5min_2022_10_04.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447097&dnode=Clearinghouse",
+      "bytes": "27017829",
+      "sha256": "f636f980529fdf52fd6d90dd2d08688aed54f9c30edd016fc50af47af99b7c20",
+      "retrieved_at_utc": "2026-11-08T06:34:49+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-05",
+      "file_name": "d07_text_station_5min_2022_10_05.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447154&dnode=Clearinghouse",
+      "bytes": "26866072",
+      "sha256": "4ab915185c46bc5d638731da29d640497f84121b716639a062a709d25c8ba8a3",
+      "retrieved_at_utc": "2026-11-08T06:34:57+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-06",
+      "file_name": "d07_text_station_5min_2022_10_06.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447211&dnode=Clearinghouse",
+      "bytes": "27278841",
+      "sha256": "9276e85566e91a001f9597896b1b2b785c3d92583d688f7a8620b2aebc4f6d2f",
+      "retrieved_at_utc": "2026-11-08T06:35:04+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-07",
+      "file_name": "d07_text_station_5min_2022_10_07.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447268&dnode=Clearinghouse",
+      "bytes": "27362915",
+      "sha256": "519b9a25e68362d9f2d7bff8185ba7593ac14041811f2287a8ff81702dedde74",
+      "retrieved_at_utc": "2026-11-08T06:35:11+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-08",
+      "file_name": "d07_text_station_5min_2022_10_08.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447327&dnode=Clearinghouse",
+      "bytes": "26899534",
+      "sha256": "f71b3ea06d552d978d114ae24d1f23d9894b4925e4bb83bf5449928b0f9fccf8",
+      "retrieved_at_utc": "2026-11-08T06:45:03+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-09",
+      "file_name": "d07_text_station_5min_2022_10_09.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447384&dnode=Clearinghouse",
+      "bytes": "26443260",
+      "sha256": "925e034f61ec5b6608ccb32bf3a0a1bc7ac72416ac881255879405606b88f6e0",
+      "retrieved_at_utc": "2026-11-08T06:45:10+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-10",
+      "file_name": "d07_text_station_5min_2022_10_10.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447441&dnode=Clearinghouse",
+      "bytes": "27095611",
+      "sha256": "055eee88144adcb22ccefbddd3ef11bdd8a2446b7a75d8d12f591cfde16b01a0",
+      "retrieved_at_utc": "2026-11-08T06:35:19+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-11",
+      "file_name": "d07_text_station_5min_2022_10_11.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447500&dnode=Clearinghouse",
+      "bytes": "27201158",
+      "sha256": "ac9e4d5abab5518f8d348c6e332cea708411e65a62296e9620104ea49315975d",
+      "retrieved_at_utc": "2026-11-08T06:35:26+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-12",
+      "file_name": "d07_text_station_5min_2022_10_12.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447557&dnode=Clearinghouse",
+      "bytes": "27270204",
+      "sha256": "ab4d1d3c98540416dbed0b298224f115cbff996664b3e0b81134655c53f09083",
+      "retrieved_at_utc": "2026-11-08T06:35:33+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-13",
+      "file_name": "d07_text_station_5min_2022_10_13.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447614&dnode=Clearinghouse",
+      "bytes": "27325236",
+      "sha256": "c6accc907df71325561e6492c57d8240dd4a9b1e8927d0599e31a05644b15a02",
+      "retrieved_at_utc": "2026-11-08T06:35:39+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-14",
+      "file_name": "d07_text_station_5min_2022_10_14.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447671&dnode=Clearinghouse",
+      "bytes": "27550028",
+      "sha256": "46abc1e3cb269b1d250d35439a8b12e7538c10e221ea902943f0dd3216ef1f91",
+      "retrieved_at_utc": "2026-11-08T06:35:47+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-15",
+      "file_name": "d07_text_station_5min_2022_10_15.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447726&dnode=Clearinghouse",
+      "bytes": "27073810",
+      "sha256": "1934c04cd37fdd4efa020a9d64e54da8ea74a9e2d9e9a4d7a150951ec16e6bd8",
+      "retrieved_at_utc": "2026-11-08T06:45:18+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-16",
+      "file_name": "d07_text_station_5min_2022_10_16.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447781&dnode=Clearinghouse",
+      "bytes": "26535789",
+      "sha256": "764c7324290950ea2d52a46655e96406bfd709cf7bdc6642d5d158948fedce0d",
+      "retrieved_at_utc": "2026-11-08T06:45:25+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-17",
+      "file_name": "d07_text_station_5min_2022_10_17.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447836&dnode=Clearinghouse",
+      "bytes": "27146815",
+      "sha256": "d50033b5fb01df63372a783b144d1bfdb270c72e98bc278cd367079c52934cdd",
+      "retrieved_at_utc": "2026-11-08T06:33:43+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-18",
+      "file_name": "d07_text_station_5min_2022_10_18.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447889&dnode=Clearinghouse",
+      "bytes": "27140442",
+      "sha256": "0682d911472e1a23b001d670dbab3d9e80c78a5766c9f4801e28a0e00f15b17b",
+      "retrieved_at_utc": "2026-11-08T06:33:50+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-19",
+      "file_name": "d07_text_station_5min_2022_10_19.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447944&dnode=Clearinghouse",
+      "bytes": "27211699",
+      "sha256": "14c8669b238338fba10f7faceb0c359333e5e5f7c5e0da827a33a89c134d5567",
+      "retrieved_at_utc": "2026-11-08T06:33:57+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-20",
+      "file_name": "d07_text_station_5min_2022_10_20.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447999&dnode=Clearinghouse",
+      "bytes": "27100288",
+      "sha256": "b89d679809946f616307a0f062a9d86479b7eb8594e2054df2e3f06d714726f3",
+      "retrieved_at_utc": "2026-11-08T06:34:04+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-21",
+      "file_name": "d07_text_station_5min_2022_10_21.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=448053&dnode=Clearinghouse",
+      "bytes": "27319404",
+      "sha256": "acf35e52d1b15afce0ca8392828797c0139829f8e4b604261c77da599f88f07a",
+      "retrieved_at_utc": "2026-11-08T06:34:11+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-22",
+      "file_name": "d07_text_station_5min_2022_10_22.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=448109&dnode=Clearinghouse",
+      "bytes": "26982230",
+      "sha256": "1dbd29dbe6fd8e30711c524266755d396be3609894ea9dcc08c859f9c5181c1f",
+      "retrieved_at_utc": "2026-11-08T06:45:32+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-23",
+      "file_name": "d07_text_station_5min_2022_10_23.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=448167&dnode=Clearinghouse",
+      "bytes": "26555822",
+      "sha256": "e93921d183cd690f16017b63e1d0c5fd89eefd58c9c9bd92ba30d0b1d0fd5ffe",
+      "retrieved_at_utc": "2026-11-08T06:45:40+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-24",
+      "file_name": "d07_text_station_5min_2022_10_24.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=448226&dnode=Clearinghouse",
+      "bytes": "26880330",
+      "sha256": "424ef758855a9c5a7be44590b75fc1b37f9b06b6315520da5ab87babcd41fbff",
+      "retrieved_at_utc": "2026-11-08T06:35:53+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-25",
+      "file_name": "d07_text_station_5min_2022_10_25.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=448285&dnode=Clearinghouse",
+      "bytes": "26847111",
+      "sha256": "4fa801043ca2b48e927c641207dd7e8317a39cc3962956780d6dcd252a50c48a",
+      "retrieved_at_utc": "2026-11-08T06:36:00+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-26",
+      "file_name": "d07_text_station_5min_2022_10_26.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=448342&dnode=Clearinghouse",
+      "bytes": "26725534",
+      "sha256": "957025c72225186db0062d9ad215b069f12d14ef2e799fd36e0f4b0590e5f61c",
+      "retrieved_at_utc": "2026-11-08T06:36:06+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-27",
+      "file_name": "d07_text_station_5min_2022_10_27.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=448399&dnode=Clearinghouse",
+      "bytes": "26764258",
+      "sha256": "920f390365799001a6e56292c6b8a26c68fcb36521acc19d97755b589c80a27c",
+      "retrieved_at_utc": "2026-11-08T06:36:21+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-28",
+      "file_name": "d07_text_station_5min_2022_10_28.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=448456&dnode=Clearinghouse",
+      "bytes": "26637661",
+      "sha256": "1d1bb28eeb27f399d77d7f357df724ec4ebc42e747f74b22bfd4c49ea4b774b3",
+      "retrieved_at_utc": "2026-11-08T06:36:28+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-29",
+      "file_name": "d07_text_station_5min_2022_10_29.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=448513&dnode=Clearinghouse",
+      "bytes": "26273113",
+      "sha256": "794350ac1f16b5bdaa8429316353cb3cf69974fd7efe13dad8faa24d072c7af0",
+      "retrieved_at_utc": "2026-11-08T06:45:48+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-30",
+      "file_name": "d07_text_station_5min_2022_10_30.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=448568&dnode=Clearinghouse",
+      "bytes": "20746827",
+      "sha256": "892a564c899bcdb506ce9a88a7bf449a1a2b7fc781e7504d5f78b3f996fa3dde",
+      "retrieved_at_utc": "2026-11-08T06:45:59+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-31",
+      "file_name": "d07_text_station_5min_2022_10_31.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=448623&dnode=Clearinghouse",
+      "bytes": "26173407",
+      "sha256": "e1ecddb74d8d749d6098a5bd8688dce2d3b1efa05c60cbe5e50cd0aa651fb332",
+      "retrieved_at_utc": "2026-11-08T06:36:35+00:00",
+      "error": ""
+    }
+  ],
+  "config_snapshot": {
+    "district": 7,
+    "session_file": ".pems/storage-state.json",
+    "data_root": "data",
+    "stations": {
+      "716744": {
+        "role": "on_ramp",
+        "label": "Ventura Blvd SB on-ramp"
+      },
+      "717816": {
+        "role": "mainline",
+        "label": "Ventura Blvd SB mainline"
+      },
+      "765197": {
+        "role": "off_ramp",
+        "label": "Ventura Blvd SB off-ramp",
+        "optional": true
+      },
+      "777066": {
+        "role": "upstream_mainline",
+        "label": "North of 101 SB mainline",
+        "optional": true
+      },
+      "765171": {
+        "role": "upstream_mainline",
+        "label": "Burbank 1 SB mainline",
+        "optional": true
+      },
+      "717809": {
+        "role": "downstream_mainline",
+        "label": "Valley Vista SB mainline",
+        "optional": true
+      },
+      "764754": {
+        "role": "downstream_mainline",
+        "label": "Woodcrest SB mainline",
+        "optional": true
+      }
+    },
+    "corridor": {
+      "freeway": 405,
+      "direction": "S",
+      "abs_pm_min": 61.5,
+      "abs_pm_max": 64.0
+    },
+    "stages": {
+      "1": [
+        [
+          "2022-10-17",
+          "2022-10-21"
+        ]
+      ],
+      "2": [
+        [
+          "2022-10-03",
+          "2022-10-14"
+        ],
+        [
+          "2022-10-24",
+          "2022-10-31"
+        ]
+      ],
+      "3": [
+        [
+          "2023-10-16",
+          "2023-10-20"
+        ]
+      ],
+      "4": [
+        [
+          "2024-10-14",
+          "2024-10-18"
+        ]
+      ],
+      "5": [
+        [
+          "2025-10-13",
+          "2025-10-17"
+        ]
+      ]
+    },
+    "thresholds": {
+      "min_mean_observed_pct": 90,
+      "min_pct_intervals_ge90": 90,
+      "max_missing_pct": 5,
+      "max_speed_mph": 100,
+      "stuck_run_intervals": 6,
+      "required_roles": [
+        "on_ramp",
+        "mainline"
+      ]
+    },
+    "incident_dates": [
+      "2022-10-17",
+      "2022-10-18",
+      "2022-10-20"
+    ],
+    "download": {
+      "retries": 3,
+      "backoff_s": 10,
+      "timeout_s": 300
+    }
+  },
+  "code_version": "unknown",
+  "created_at_utc": "2026-11-13T17:32:40+00:00",
+  "license_note": "Caltrans data terms apply; session cookies never stored here",
+  "split_assignment": "unassigned"
+}

@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ramp Metering Live Demo</title>
+<style>
+  :root { --ink:#1f2328; --muted:#5f6368; --line:#d0d7de; --bg:#ffffff; --panel:#f2f6fb; --a:#2774AE; --b:#c2410c; --dark:#00375B; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px 24px; font: 16px/1.4 Arial, Helvetica, sans-serif; color: var(--ink); background: var(--bg); }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-bottom: 12px; }
+  h1 { font-size: 22px; margin: 0; color: var(--dark); flex: 1 1 320px; }
+  label { font-size: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+  select, button { font: inherit; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+  button { cursor: pointer; background: var(--dark); color: #fff; border-color: var(--dark); padding: 6px 14px; }
+  button:disabled { opacity: .5; cursor: default; }
+  .run { background: var(--panel); border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; }
+  .run h2 { margin: 0 0 4px; font-size: 18px; display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: baseline; }
+  .run h2 span.stat { font-size: 15px; font-weight: normal; color: var(--muted); }
+  .run h2 b.name { min-width: 120px; }
+  canvas { display: block; width: 100%; }
+  .transport { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 8px 0; }
+  #clock { font-size: 28px; font-weight: bold; font-variant-numeric: tabular-nums; color: var(--dark); min-width: 90px; }
+  #scrub { flex: 1 1 300px; }
+  #status { font-size: 14px; color: var(--muted); }
+  table { border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  th, td { padding: 4px 12px; border-bottom: 1px solid var(--line); text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); margin: 4px 0; }
+  .sw { display: inline-block; width: 14px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 4px; }
+  footer { font-size: 13px; color: var(--muted); margin-top: 10px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>I-405 SB on-ramp at Ventura Blvd · live simulation</h1>
+  <label>Demand case <select id="case"></select></label>
+  <button id="go">Run</button>
+  <span id="status">Loading…</span>
+</header>
+
+<div class="run"><h2><b class="name" id="nameA" style="color:var(--a)">A</b><span class="stat" id="statA"></span></h2><canvas id="roadA" height="150" aria-label="Road schematic for rule A"></canvas></div>
+<div class="run"><h2><b class="name" id="nameB" style="color:var(--b)">B</b><span class="stat" id="statB"></span></h2><canvas id="roadB" height="150" aria-label="Road schematic for rule B"></canvas></div>
+<div class="legend">
+  Vehicle speed:
+  <span><i class="sw" style="background:#b3261e"></i>&lt; 5 m/s</span>
+  <span><i class="sw" style="background:#e8590c"></i>5–12</span>
+  <span><i class="sw" style="background:#f2a900"></i>12–20</span>
+  <span><i class="sw" style="background:#2f9e44"></i>≥ 20 m/s</span>
+  <span>· Lanes are unrolled: the loop is drawn straight, and only the freeway lane next to the ramp is modeled.</span>
+</div>
+
+<div class="transport">
+  <button id="play">Play</button>
+  <span id="clock">05:00</span>
+  <input id="scrub" type="range" min="0" max="0" value="0" aria-label="Simulation time">
+</div>
+<canvas id="chart" height="260" aria-label="Detector speed and street queue over the morning"></canvas>
+<table id="summary"></table>
+<footer>Same engine and observed demand (Tue 11 Oct 2022, PeMS) as the deck's results. Simulated and uncalibrated: the geometry, the merge lane and the metering plan carry assumptions.</footer>
+
+<script>
+const NAMES = { none: "No meter", fixed: "Fixed rate", caltrans: "Caltrans plan", alinea: "ALINEA" };
+const $ = id => document.getElementById(id);
+const SPEED = 240; // simulated seconds per real second: the 5-hour morning plays in 75 s
+let meta, runs = [null, null], frame = 0, playing = false, last = 0, token = 0;
+
+function fill(sel, values, value, label = v => v) {
+  sel.innerHTML = values.map(v => `<option value="${v}">${label(v)}</option>`).join("");
+  sel.value = value;
+}
+function clock(s) {
+  const [h, m] = meta.start.split(":").map(Number), t = h * 60 + m + Math.floor(s / 60);
+  return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
+}
+function sized(c) {
+  const r = devicePixelRatio || 1, w = c.clientWidth, h = +c.getAttribute("height");
+  if (c.width !== Math.round(w * r)) { c.width = Math.round(w * r); c.height = Math.round(h * r); c.style.height = h + "px"; }
+  const g = c.getContext("2d"); g.setTransform(r, 0, 0, r, 0, 0); return [g, w, h];
+}
+const speedColor = v => v < 5 ? "#b3261e" : v < 12 ? "#e8590c" : v < 20 ? "#f2a900" : "#2f9e44";
+
+function drawRoad(c, run, ctl) {
+  const [g, W, H] = sized(c); g.clearRect(0, 0, W, H);
+  const lanes = meta.lanes, F = lanes.length - 1, x0 = Math.min(...lanes.map(l => l.start)), x1 = Math.max(...lanes.map(l => l.end));
+  const left = 150, right = 16, k = (W - left - right) / (x1 - x0), X = x => left + (x - x0) * k;
+  const lh = 20, top = 22, rowY = j => j === F ? top + F * lh + 10 : top + (F - 1 - j) * lh;
+  g.font = "12px Arial"; g.textBaseline = "middle";
+  lanes.forEach((l, j) => {
+    g.fillStyle = "#c9d1d9"; g.fillRect(X(l.start), rowY(j) + 2, (l.end - l.start) * k, lh - 4);
+  });
+  g.fillStyle = "#5f6368";
+  g.fillText("on-ramp (3 → 2 → 1 lanes)", X(0), top - 12);
+  g.fillText("freeway lane next to the ramp →", X(meta.merge_m) + 8, rowY(F) + lh + 10);
+  g.fillText("merge", X(meta.merge_m) - 16, top - 12);
+  g.strokeStyle = "#5f6368"; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(meta.merge_m), top - 4); g.lineTo(X(meta.merge_m), rowY(F) + lh); g.stroke(); g.setLineDash([]);
+  for (const [name, x] of Object.entries(meta.detectors)) {
+    const y = rowY(F) + lh - 1; g.fillStyle = "#00375B";
+    g.beginPath(); g.moveTo(X(x), y - 6); g.lineTo(X(x) - 5, y + 2); g.lineTo(X(x) + 5, y + 2); g.fill();
+  }
+  // meter stop line
+  const metered = ctl !== "none", f = run ? Math.min(Math.floor(frame), run.frames.length - 1) : 0;
+  g.fillStyle = metered ? "#b3261e" : "#9aa0a6";
+  g.fillRect(X(meta.stop_line_m) - 2, top + 1, 4, F * lh - 2);
+  g.fillText(metered ? `meter${run && run.rate_vph[f] != null ? " " + run.rate_vph[f] + " veh/h" : ""}` : "meter off", X(meta.stop_line_m) - 20, rowY(F) + lh + 10);
+  // street queue (vehicles that cannot enter the ramp yet)
+  const n = run ? run.street[f] : 0;
+  g.fillStyle = "#5f6368"; g.fillText("Ventura Blvd", 8, top - 12);
+  g.fillStyle = n ? "#b3261e" : "#5f6368"; g.font = "bold 22px Arial"; g.fillText(String(n), 8, top + 18);
+  g.font = "12px Arial"; g.fillText("waiting on street", 8, top + 40);
+  for (let i = 0; i < Math.min(n, 60); i++) {
+    g.fillStyle = "#b3261e"; g.fillRect(left - 10 - (i % 12) * 9, top + 54 + Math.floor(i / 12) * 9, 7, 6);
+  }
+  if (!run) return;
+  const cars = run.frames[f], len = 5 * k;
+  for (let i = 0; i < cars.length; i += 3) {
+    g.fillStyle = speedColor(cars[i + 2]);
+    g.fillRect(X(cars[i + 1]) - len, rowY(cars[i]) + 4, Math.max(len - 1, 2), lh - 8);
+  }
+}
+
+function drawChart() {
+  const c = $("chart"), [g, W, H] = sized(c); g.clearRect(0, 0, W, H);
+  const L = 60, R = 16, T = 22, gap = 34, h1 = (H - T - gap - 26) * 0.55, h2 = (H - T - gap - 26) * 0.45, D = meta.duration_s;
+  const X = t => L + (t / D) * (W - L - R);
+  const streetMax = Math.max(5, ...runs.filter(Boolean).map(r => Math.max(...r.street)));
+  const panels = [
+    { y: T, h: h1, max: 30, title: `Mainline detector speed (m/s), upstream of the gore · dashed: ${meta.speed_line_mps} m/s congestion line`, get: r => r.detector.map(([t, v]) => [t, v]) },
+    { y: T + h1 + gap, h: h2, max: streetMax, title: "Vehicles waiting on Ventura Blvd", get: r => r.street.map((v, i) => [(i + 1) * meta.snapshot_s, v]) },
+  ];
+  g.font = "12px Arial"; g.textBaseline = "middle";
+  for (const p of panels) {
+    const Y = v => p.y + p.h - (v / p.max) * p.h;
+    g.fillStyle = "#1f2328"; g.font = "bold 13px Arial"; g.fillText(p.title, L, p.y - 10); g.font = "12px Arial";
+    g.strokeStyle = "#d0d7de"; g.strokeRect(L, p.y, W - L - R, p.h);
+    g.fillStyle = "#5f6368"; g.textAlign = "right"; g.fillText(String(Math.round(p.max)), L - 6, p.y); g.fillText("0", L - 6, p.y + p.h); g.textAlign = "left";
+    if (p.max === 30) {
+      g.strokeStyle = "#b3261e"; g.setLineDash([5, 4]); g.beginPath(); g.moveTo(L, Y(meta.speed_line_mps)); g.lineTo(W - R, Y(meta.speed_line_mps)); g.stroke(); g.setLineDash([]);
+    }
+    runs.forEach((r, i) => {
+      if (!r) return;
+      g.strokeStyle = i ? "#c2410c" : "#2774AE"; g.lineWidth = 1.6; g.beginPath(); let pen = false;
+      for (const [t, v] of p.get(r)) {
+        if (v == null) { pen = false; continue; }
+        pen ? g.lineTo(X(t), Y(v)) : g.moveTo(X(t), Y(v)); pen = true;
+      }
+      g.stroke(); g.lineWidth = 1;
+    });
+  }
+  g.fillStyle = "#5f6368"; g.textAlign = "center";
+  for (let t = 0; t <= D; t += 3600) g.fillText(clock(t), X(t), H - 10);
+  g.textAlign = "left";
+  const t = (Math.floor(frame) + 1) * meta.snapshot_s;
+  g.strokeStyle = "#00375B"; g.lineWidth = 2; g.beginPath(); g.moveTo(X(t), T); g.lineTo(X(t), H - 24); g.stroke(); g.lineWidth = 1;
+}
+
+function draw() {
+  const f = Math.floor(frame), ctl = meta.default.controllers;
+  $("clock").textContent = clock((f + 1) * meta.snapshot_s);
+  $("scrub").value = f;
+  ["A", "B"].forEach((s, i) => {
+    const r = runs[i];
+    drawRoad($("road" + s), r, r ? r.controller : ctl[i]);
+    if (!r) { $("stat" + s).textContent = ""; return; }
+    const det = r.detector.filter(([t]) => t <= (f + 1) * meta.snapshot_s).pop();
+    $("stat" + s).textContent = `ramp queue ${r.ramp_queue[f]} veh · on street ${r.street[f]} veh · detector ${det && det[1] != null ? det[1].toFixed(1) + " m/s" : "–"}`;
+  });
+  drawChart();
+}
+
+function tick(now) {
+  if (playing && runs[0]) {
+    frame += ((now - last) / 1000) * SPEED / meta.snapshot_s;
+    if (frame >= runs[0].frames.length - 1) { frame = runs[0].frames.length - 1; setPlaying(false); }
+  }
+  last = now; draw(); requestAnimationFrame(tick);
+}
+function setPlaying(on) { playing = on && !!runs[0]; $("play").textContent = playing ? "Pause" : "Play"; }
+
+function summary() {
+  const rows = [["Persistent congestion at the detector (min)", "congested_min", 0], ["Most vehicles waiting on Ventura Blvd", "street_max_veh", 0], ["Demand served in the window (%)", "served_pct", 1], ["Time per vehicle (min)", "time_per_veh_min", 2]];
+  $("summary").innerHTML = `<tr><th>Whole morning, seed ${runs[0].seed}</th><th style="color:var(--a)">${NAMES[runs[0].controller]}</th><th style="color:var(--b)">${NAMES[runs[1].controller]}</th></tr>` +
+    rows.map(([label, key, d]) => `<tr><td>${label}</td>${runs.map(r => `<td>${r.summary[key].toFixed(d)}</td>`).join("")}</tr>`).join("");
+}
+
+async function go() {
+  const mine = ++token, q = { case: $("case").value, seed: meta.default.seed }, ctl = meta.default.controllers;
+  runs = [null, null]; setPlaying(false); frame = 0; $("summary").innerHTML = ""; $("go").disabled = true;
+  ["A", "B"].forEach((s, i) => $("name" + s).textContent = NAMES[ctl[i]]);
+  const t0 = performance.now(), timer = setInterval(() => $("status").textContent = `Simulating 5 h of traffic… ${Math.round((performance.now() - t0) / 1000)} s (about 30 s)`, 500);
+  try {
+    const got = await Promise.all(ctl.map(async c => {
+      const res = await fetch(`/run?case=${encodeURIComponent(q.case)}&controller=${c}&seed=${q.seed}`);
+      if (!res.ok) throw new Error(await res.text());
+      return { ...(await res.json()), controller: c, seed: q.seed };
+    }));
+    if (mine !== token) return;
+    runs = got; $("scrub").max = runs[0].frames.length - 1;
+    $("status").textContent = `Demand case ${q.case}, seed ${q.seed}: ready.`; summary();
+  } catch (e) {
+    if (mine === token) $("status").textContent = "Run failed: " + e.message;
+  } finally {
+    clearInterval(timer); if (mine === token) $("go").disabled = false;
+  }
+}
+
+(async () => {
+  meta = await (await fetch("/meta")).json();
+  fill($("case"), meta.cases, meta.default.case, v => v === "historical" ? "historical (observed)" : v);
+  $("go").onclick = go;
+  $("play").onclick = () => setPlaying(!playing);
+  $("scrub").oninput = e => { frame = +e.target.value; };
+  requestAnimationFrame(tick);
+  go();
+})();
+</script>
+</body>
+</html>

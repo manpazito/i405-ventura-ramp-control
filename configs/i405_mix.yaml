@@ -1,0 +1,53 @@
+# Ramp/mainline mix study (D021): the site scenario of configs/i405.yaml with ramp demand
+# and merge-lane through traffic scaled separately, under the flow-limited exit and the
+# free exit. Question, before-run numbers, predictions and results:
+# experiments/ramp_mainline_mix.md. Run:
+#   uv run arm-ablation --config configs/i405_mix.yaml --analytic   (no simulation)
+#   uv run arm-ablation --config configs/i405_mix.yaml --output results/mix-study
+site: configs/i405.yaml # geometry, demand day, boundary, controllers and congestion definition
+seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+# Lane of mainline station 717816 next to the ramp. PeMS numbers lanes from the median:
+# on the demand day lane 1 is the fastest in free flow (76.5 mph before 05:00) and lane 5
+# the slowest (64.8 mph) [PeMS]. That the station sits upstream of the gore is [assumed],
+# as in the site scenario.
+shoulder_lane: 5
+# A paired difference counts when its 95 % t interval over the seeds excludes zero and
+# its mean reaches this size: minutes of persistent congestion (D016), per cent of the
+# unmetered ramp exits of the cell.
+decision: {congested_min: 5, ramp_exits_pct: 2}
+contrasts: # cell minus cell, paired by seed
+  - [lim_r1_m1.25, lim_r1_m1] # prediction 1: more mainline traffic, same ramp demand
+  - [lim_r1.25_mlane5, lim_r1_mlane5] # prediction 3: more ramp demand at the upper bound
+  - [free_r1_m1.25, free_r1_m1]
+  - [free_r1.25_mlane5, free_r1_mlane5]
+# Every cell is the observed day (factor 1) with its own ramp level and mainline level.
+# Mainline levels 0.75, 1 and 1.25 scale the lane-balance through traffic of the site
+# scenario; `mainline: shoulder_lane` replaces it with the shoulder lane as observed, the
+# upper bound in which no shoulder-lane driver moves left. The first cell is the
+# observed day. Cells with equal ramp and mainline factors repeat the site's x0.75,
+# historical, x1.25, free_exit_x1 and free_exit_x1.25 variants.
+variants:
+  - {id: lim_r1_m1, kind: scale, factor: 1.0, ramp_factor: 1.0, mainline_factor: 1.0}
+  - {id: lim_r1_m0.75, kind: scale, factor: 1.0, ramp_factor: 1.0, mainline_factor: 0.75}
+  - {id: lim_r1_m1.25, kind: scale, factor: 1.0, ramp_factor: 1.0, mainline_factor: 1.25}
+  - {id: lim_r1_mlane5, kind: scale, factor: 1.0, ramp_factor: 1.0, mainline: shoulder_lane}
+  - {id: lim_r0.75_m0.75, kind: scale, factor: 1.0, ramp_factor: 0.75, mainline_factor: 0.75}
+  - {id: lim_r0.75_m1, kind: scale, factor: 1.0, ramp_factor: 0.75, mainline_factor: 1.0}
+  - {id: lim_r0.75_m1.25, kind: scale, factor: 1.0, ramp_factor: 0.75, mainline_factor: 1.25}
+  - {id: lim_r0.75_mlane5, kind: scale, factor: 1.0, ramp_factor: 0.75, mainline: shoulder_lane}
+  - {id: lim_r1.25_m0.75, kind: scale, factor: 1.0, ramp_factor: 1.25, mainline_factor: 0.75}
+  - {id: lim_r1.25_m1, kind: scale, factor: 1.0, ramp_factor: 1.25, mainline_factor: 1.0}
+  - {id: lim_r1.25_m1.25, kind: scale, factor: 1.0, ramp_factor: 1.25, mainline_factor: 1.25}
+  - {id: lim_r1.25_mlane5, kind: scale, factor: 1.0, ramp_factor: 1.25, mainline: shoulder_lane}
+  - {id: free_r1_m1, kind: scale, factor: 1.0, ramp_factor: 1.0, mainline_factor: 1.0, free_exit: true}
+  - {id: free_r1_m0.75, kind: scale, factor: 1.0, ramp_factor: 1.0, mainline_factor: 0.75, free_exit: true}
+  - {id: free_r1_m1.25, kind: scale, factor: 1.0, ramp_factor: 1.0, mainline_factor: 1.25, free_exit: true}
+  - {id: free_r1_mlane5, kind: scale, factor: 1.0, ramp_factor: 1.0, mainline: shoulder_lane, free_exit: true}
+  - {id: free_r0.75_m0.75, kind: scale, factor: 1.0, ramp_factor: 0.75, mainline_factor: 0.75, free_exit: true}
+  - {id: free_r0.75_m1, kind: scale, factor: 1.0, ramp_factor: 0.75, mainline_factor: 1.0, free_exit: true}
+  - {id: free_r0.75_m1.25, kind: scale, factor: 1.0, ramp_factor: 0.75, mainline_factor: 1.25, free_exit: true}
+  - {id: free_r0.75_mlane5, kind: scale, factor: 1.0, ramp_factor: 0.75, mainline: shoulder_lane, free_exit: true}
+  - {id: free_r1.25_m0.75, kind: scale, factor: 1.0, ramp_factor: 1.25, mainline_factor: 0.75, free_exit: true}
+  - {id: free_r1.25_m1, kind: scale, factor: 1.0, ramp_factor: 1.25, mainline_factor: 1.0, free_exit: true}
+  - {id: free_r1.25_m1.25, kind: scale, factor: 1.0, ramp_factor: 1.25, mainline_factor: 1.25, free_exit: true}
+  - {id: free_r1.25_mlane5, kind: scale, factor: 1.0, ramp_factor: 1.25, mainline: shoulder_lane, free_exit: true}

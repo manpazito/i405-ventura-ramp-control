@@ -1,0 +1,54 @@
+[project]
+name = "adaptive-ramp-metering"
+version = "0.1.0"
+description = "Research foundation for adaptive ramp metering and traffic control on I-405 southbound"
+readme = "README.md"
+authors = [
+    { name = "manpazito", email = "manpazito@berkeley.edu" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "eclipse-sumo>=1.28.0",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.4",
+    "pandas>=3.1.1",
+    "pems-data",
+    "plotly>=7.1.0",
+    "pyyaml>=6.0.3",
+    "scipy>=1.18.1",
+    "sumolib>=1.28.0",
+    "traci>=1.28.0",
+]
+
+[project.scripts]
+adaptive-ramp-metering = "adaptive_ramp_metering:main"
+arm-pems = "adaptive_ramp_metering.data.pems:main"
+arm-micro = "adaptive_ramp_metering.simulation.micro:main"
+arm-ablation = "adaptive_ramp_metering.simulation.ablation:main"
+arm-drivers = "adaptive_ramp_metering.simulation.drivers:main"
+arm-study = "adaptive_ramp_metering.simulation.drivers:main"
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+target-version = "py314"
+line-length = 88
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--import-mode=importlib"
+
+[tool.uv.sources]
+pems-data = { git = "https://github.com/wcc961129/pems-data-downloader", rev = "a66cdf3" }
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "ruff>=0.17.4",
+]

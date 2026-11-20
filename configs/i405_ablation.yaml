@@ -1,0 +1,63 @@
+# One-factor ablation of the metering rules (D024): the calibrated site scenario of
+# configs/i405.yaml, and one change per case. Every case runs under every rule and seed;
+# cases are compared with the first one and rules with each other, paired by seed.
+# Plan: docs/study_design.md. Predictions and results: experiments/rule_ablation.md. Run:
+#   uv run arm-study --config configs/i405_ablation.yaml --output results/rule-ablation
+site: configs/i405.yaml
+seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+shoulder_lane: 5 # PeMS lane of station 717816 next to the ramp, for the `shoulder_lane` case
+variants: [historical] # the observed day; a case may replace its demand
+controllers: [none, fixed, caltrans, alinea]
+# A paired difference counts when its 95 % t interval excludes zero and its mean reaches
+# 5 minutes of persistent congestion (D016, D021).
+decision: {metric: congested_min, at_least: 5}
+rule_contrasts: [[alinea, caltrans], [alinea, fixed], [caltrans, fixed]]
+cases:
+  - {id: baseline}
+
+  # Demand. Factors multiply the observed flows; the downstream boundary is not rescaled.
+  - {id: demand_0.9, variant: {kind: scale, factor: 0.9}}
+  - {id: demand_1.1, variant: {kind: scale, factor: 1.1}}
+  - {id: ramp_0.75, variant: {kind: scale, factor: 1.0, ramp_factor: 0.75}}
+  - {id: ramp_1.25, variant: {kind: scale, factor: 1.0, ramp_factor: 1.25}}
+  - {id: mainline_0.75, variant: {kind: scale, factor: 1.0, mainline_factor: 0.75}}
+  - {id: mainline_1.25, variant: {kind: scale, factor: 1.0, mainline_factor: 1.25}}
+  - {id: shoulder_lane, variant: {kind: scale, factor: 1.0, mainline: shoulder_lane}} # through traffic as observed in the lane next to the ramp: an upper bound (D021)
+  - {id: wave_10min, variant: {kind: sine, amplitude: 0.5, period_s: 600}}
+  - {id: wave_60min, variant: {kind: sine, amplitude: 0.5, period_s: 3600}}
+  - {id: free_exit, variant: {kind: scale, factor: 1.0, free_exit: true}} # no downstream restriction: the merge is the only bottleneck
+
+  # Car following. One IDM parameter moved; the rules keep their baseline settings.
+  - {id: T_low, set: {micro.vehicle.idm.time_gap_s: 1.21}} # -20 %
+  - {id: T_high, set: {micro.vehicle.idm.time_gap_s: 1.81}} # +20 %
+  - {id: a_low, set: {micro.vehicle.idm.a_mps2: 2.0}} # -20 %
+  - {id: a_high, set: {micro.vehicle.idm.a_mps2: 3.0}} # +20 %
+  - {id: b_low, set: {micro.vehicle.idm.b_mps2: 1.0}}
+  - {id: b_high, set: {micro.vehicle.idm.b_mps2: 3.0}}
+  - {id: s0_low, set: {micro.vehicle.idm.s0_m: 1.0}}
+  - {id: s0_high, set: {micro.vehicle.idm.s0_m: 3.0}}
+  - {id: v0_low, set: {micro.mainline.desired_speed_mps: 26.2}} # -10 %, freeway lane only
+  - {id: v0_high, set: {micro.mainline.desired_speed_mps: 32.0}} # +10 %, freeway lane only
+  - {id: delta_4, set: {micro.vehicle.idm.delta: 4}} # the textbook exponent
+
+  # Drivers that differ (the populations of the driver study, D019).
+  - {id: drivers_normal, spread: {v0: 0.1155, time_gap: 0.1155, a: 0.1155, b: 0.1155}, shape: normal}
+  - id: drivers_field
+    spread: {v0: 0.10, time_gap: 0.20, a: 0.33, b: 0.33, s0: 0.48, b_safe: 0.25}
+    shape: {time_gap: lognormal, a: lognormal, b: lognormal, s0: lognormal, b_safe: lognormal}
+
+  # Information: ALINEA's detector reports nothing from 06:30 to 07:30.
+  - id: detector_fault
+    variant: {kind: scale, factor: 1.0, detector_fault: {sensor_id: mainline_merge, from_s: 5400, until_s: 9000}}
+
+  # The rules' own settings. Each case changes one rule; the others repeat the baseline.
+  - {id: alinea_gain_half, set: {micro.control.alinea.gain_veh_per_s_per_occupancy: 0.75}}
+  - {id: alinea_gain_double, set: {micro.control.alinea.gain_veh_per_s_per_occupancy: 3.0}}
+  - {id: alinea_target_low, set: {micro.control.alinea.target_occupancy: 0.126}} # -20 %
+  - {id: alinea_target_high, set: {micro.control.alinea.target_occupancy: 0.190}} # +20 %
+  - {id: alinea_no_queue_rule, set: {micro.control.queue_target_veh: 100000}} # the rule as the lecture and the 1991 paper state it
+  - {id: caltrans_early, set: {micro.control.caltrans.occupancy: [0.03, 0.12]}} # the plan restricts at lower occupancy
+  - {id: caltrans_late, set: {micro.control.caltrans.occupancy: [0.08, 0.32]}} # and at higher occupancy
+  - {id: caltrans_no_override, set: {micro.control.caltrans.queue_occupancy: 1.01}} # an occupancy never reached
+  - {id: fixed_6_per_min, set: {micro.control.fixed_rate_veh_per_s: 0.2}} # 6 vehicles a minute per metered lane
+  - {id: fixed_12_per_min, set: {micro.control.fixed_rate_veh_per_s: 0.4}} # 12 vehicles a minute per metered lane

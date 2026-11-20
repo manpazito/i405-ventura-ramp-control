@@ -1,0 +1,69 @@
+# Every numerical value is synthetic and illustrative. See docs/micro_demo.md.
+# Ramp topology (3 → 2 → 1 lanes, then a freeway merge) was confirmed by the user
+# from an aerial image; lengths, speeds, meter location and demand are assumptions.
+schema_version: ramp-micro-v1
+duration_s: 1800
+step_s: 0.5
+snapshot_interval_s: 2
+seeds: [1, 2, 3] # Poisson arrivals; same seed gives the same demand for every controller.
+vehicle:
+  length_m: 5.0
+  idm: # IDM form from Treiber et al. (2000); a, b, T are project choices (see docs/micro_demo.md)
+    a_mps2: 2.0
+    b_mps2: 2.0
+    time_gap_s: 1.0
+    s0_m: 2.0
+    delta: 4
+lane_change:
+  zone_m: 100 # mandatory lane changes and merge yielding start this far before a lane ends
+  b_safe_mps2: 4.0 # MOBIL safety criterion (Kesting, Treiber & Helbing 2007)
+ramp:
+  sections:
+    - {id: ramp_entry, lanes: 3, length_m: 120, desired_speed_mps: 12}
+    - {id: ramp_loop, lanes: 2, length_m: 270, desired_speed_mps: 9} # curve: lower desired speed
+    - {id: ramp_single, lanes: 1, length_m: 210, desired_speed_mps: 20} # acceleration lane
+mainline: # one modeled freeway lane (the merge lane); other lanes are not modeled
+  upstream_length_m: 300
+  downstream_length_m: 300
+  desired_speed_mps: 22
+meter:
+  stop_line_m: 380 # on the two-lane loop exit, 10 m before the 2 → 1 drop (assumed)
+  release_window_m: 12 # a vehicle this close to the line is served by the next green
+detectors:
+  interval_s: 30
+  ramp_entry_m: 15
+  meter_passage_m: 400
+  merge_area_m: -30 # ALINEA occupancy detector on the freeway lane, relative to the merge point (negative = before it)
+control:
+  interval_s: 30
+  min_rate_veh_per_s: 0.1 # 360 veh/h
+  max_rate_veh_per_s: 0.5 # 1800 veh/h
+  fixed_rate_veh_per_s: 0.15 # baseline, startup and fallback rate (540 veh/h)
+  alinea:
+    gain_veh_per_s_per_occupancy: 1.5 # ≈ 54 (veh/h) per occupancy percentage point
+    target_occupancy: 0.22 # critical occupancy of the IDM equilibrium at a point detector (0.2205), the set value of Papageorgiou et al. 1991 [model] (D022)
+  queue_target_veh: 40 # ALINEA/Q queue control raises the rate when the estimated queue exceeds this
+  fault_hold_s: 60 # hold the last valid command this long, then use the fixed rate
+scenarios:
+  - id: peak
+    name: Congested peak
+    description: Synthetic 20-minute peak where ramp plus mainline demand exceeds the merge lane capacity.
+    periods:
+      - {until_s: 300, ramp_veh_per_s: 0.08, mainline_veh_per_s: 0.35}
+      - {until_s: 1500, ramp_veh_per_s: 0.20, mainline_veh_per_s: 0.40}
+      - {until_s: 1800, ramp_veh_per_s: 0.08, mainline_veh_per_s: 0.35}
+  - id: heavy
+    name: Heavier ramp demand
+    description: Changed-demand case with 50% more ramp demand during the peak, exposing storage and residual queues.
+    periods:
+      - {until_s: 300, ramp_veh_per_s: 0.08, mainline_veh_per_s: 0.35}
+      - {until_s: 1500, ramp_veh_per_s: 0.30, mainline_veh_per_s: 0.40}
+      - {until_s: 1800, ramp_veh_per_s: 0.08, mainline_veh_per_s: 0.35}
+  - id: fault
+    name: Downstream detector fault
+    description: Peak demand with the merge-area detector missing from minute 10 to minute 16.
+    periods:
+      - {until_s: 300, ramp_veh_per_s: 0.08, mainline_veh_per_s: 0.35}
+      - {until_s: 1500, ramp_veh_per_s: 0.20, mainline_veh_per_s: 0.40}
+      - {until_s: 1800, ramp_veh_per_s: 0.08, mainline_veh_per_s: 0.35}
+    detector_fault: {sensor_id: mainline_merge, from_s: 600, until_s: 960}

@@ -1,0 +1,17 @@
+{
+ "schema_version": "i405-driver-study-v1",
+ "origin": "simulated from observed PeMS demand; uncalibrated model",
+ "created_utc": "2026-11-19T20:04:47.267513+00:00",
+ "source_sha256": {
+  "config": "09f60768853f7f025022c670a66975c9af84c05d32186e02076b54bd135528ee",
+  "site": "65d1edb0dbb9484442bc2d245908c3caef84e32b770cb8feee510972f62f8e87",
+  "pems_extract": "c31657ac24e883f40d66e25c556e30d813d2e292501c8569abd6418a29efcd70",
+  "drivers.py": "2a0c5f03bcabc6c3a08c19f40be88c4b8c80339f3ab519f0d0bd985c83011a81",
+  "ablation.py": "7c208e8d8eabab1ffb8de795fcaf2af08cbb0aaf937274a12cfccc25919a6d56",
+  "micro.py": "6392d21bb7ac25234bb25b335a1732f479a3875d1c05f1283675c6056b1b57e8",
+  "metering.py": "669dd665408d851dc5fc32270625c1f0203f6a3af5e8102d6d762f095df4fa4a"
+ },
+ "git_revision": "12f6a67e288e80ec3ede15ef74adc1aad6be3064",
+ "python_version": "3.14.10",
+ "runs": 1400
+}

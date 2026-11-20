@@ -1,0 +1,99 @@
+# I-405 SB on-ramp at Ventura Blvd: site scenario and demand ablation (arm-ablation).
+# Sources, assumptions and limits for every value: docs/i405_ablation.md. Labels below:
+#   [sketch]  measured from the project's AutoCAD trace (scripts/measure_ramp_pdf.py)
+#   [calibrated] fitted to PeMS on Oct 10-12 2022 and checked on other days (D023,
+#             experiments/calibration.md, scripts/calibrate_fd.py)
+#   [PeMS]    from the October 2022 Station 5-Minute data (arm-pems)
+#   [Caltrans] from the cited Caltrans documents
+#   [assumed] project choice, not yet verified
+micro: # schema of configs/micro.yaml (ramp-micro-v1); scenarios are built from `demand`
+  schema_version: ramp-micro-v1
+  duration_s: 18000 # 05:00-10:00, the observed weekday AM congestion plus shoulders [PeMS]
+  step_s: 0.5
+  snapshot_interval_s: 30
+  seeds: [1, 2, 3]
+  vehicle:
+    length_m: 5.0 # [assumed] as in micro.yaml
+    # time_gap_s and delta [calibrated]: the equilibrium capacity equals the observed
+    # 1,978 veh/h per lane. a_mps2 [calibrated] at system level: of 1.5, 2.0 and 2.5 the
+    # value that best reproduces the ramp vehicles served on Oct 10-12 2022. b and s0
+    # [assumed]: these data cannot identify them.
+    idm: {a_mps2: 2.5, b_mps2: 2.0, time_gap_s: 1.51, s0_m: 2.0, delta: 20}
+  lane_change:
+    zone_m: 70 # [assumed] starts just after the stop line and at the gore
+    b_safe_mps2: 4.0
+  ramp:
+    sections:
+      - {id: approach, lanes: 3, length_m: 95, desired_speed_mps: 11} # length [sketch]; 25 mph [assumed]
+      - {id: loop, lanes: 3, length_m: 48, desired_speed_mps: 7} # middle-lane arc [sketch]; speed from ~15 m radius [assumed]
+      - {id: return_leg, lanes: 2, length_m: 30, desired_speed_mps: 12} # [sketch]; speed [assumed]
+      - {id: acceleration, lanes: 1, length_m: 85, desired_speed_mps: 29.1} # 11.5 m to gore + 73.5 m lane/taper [sketch]; speed as on the freeway lane
+  mainline: # one modeled freeway lane: the outer lane next to the ramp
+    upstream_length_m: 298 # 225 m of traced edge upstream of the gore + 73.5 m [sketch]
+    downstream_length_m: 235 # traced edge downstream of the taper end [sketch]
+    desired_speed_mps: 29.1 # free-flow speed of the station's fundamental diagram, 65.1 mph [calibrated]
+  meter:
+    stop_line_m: 72.5 # red line across all three lanes, confirmed by the user [sketch]
+    release_window_m: 12
+  detectors:
+    interval_s: 30 # controllers aggregate mainline data every 30 s [Caltrans]
+    loop_length_m: 1.83 # 6 ft loop: occupancy covers vehicle length + loop [assumed]
+    ramp_entry_m: 18 # queue loop about 3/4 of the way back from the limit line [Caltrans]
+    meter_passage_m: 76 # passage detector just past the stop line [assumed]
+    merge_area_m: -30 # ALINEA detector in the merge area, 43.5 m past the gore [assumed]
+    mainline_upstream_m: -125 # Caltrans mainline station upstream of the gore [Caltrans]; exact spot [assumed]
+  control:
+    interval_s: 30 # rate update every 30 s [Caltrans]
+    min_rate_veh_per_s: 0.13333333 # 2 metered lanes x 240 veh/h, one vehicle per green [Caltrans]
+    max_rate_veh_per_s: 0.5 # 2 metered lanes x 900 veh/h [Caltrans]
+    fixed_rate_veh_per_s: 0.26666667 # time-of-day fallback: 8 veh/min/lane, the District 7 example [Caltrans]; this ramp's value [assumed]
+    # Gain: demo value [assumed]. Target: the critical occupancy of the IDM equilibrium for
+    # these parameters and this loop (0.158), the set value of Papageorgiou et al. 1991
+    # [model]. Recompute it when T, v0, s0, the vehicle length or the loop change (D022).
+    alinea: {gain_veh_per_s_per_occupancy: 1.5, target_occupancy: 0.158}
+    queue_target_veh: 20 # ALINEA/Q: about 80 % of the 24.6 vehicles the storage holds at 29 ft each [assumed]
+    fault_hold_s: 60
+    caltrans: # local traffic-responsive plan + queue override; this ramp's own plan is unpublished
+      metered_lanes: 2 # Ramp Metering Development Plans 2017/2023 [Caltrans]
+      levels: 15 # stepwise plan: 900 veh/h/lane at <= 5 % occupancy down to 240 at >= 20 %,
+      occupancy: [0.05, 0.20] # after the published SR-99 Mack Rd AM plan [Caltrans]; [assumed] for this ramp
+      rate_veh_per_h_per_lane: [900, 240]
+      queue_occupancy: 0.5 # queue loop covered at least half of a 30 s interval [assumed]
+      queue_step_veh_per_h_per_lane: 120 # +2 veh/min/lane per update while the loop is covered [Caltrans]
+
+demand: # historical demand: one observed weekday
+  pems_file: data/interim/pems/station_5min_2022_10_11.csv # Tue 2022-10-11, a qualifying day
+  ramp_station: 716744
+  mainline_station: 717816
+  mainline_lanes: 5 # general-purpose lanes at the station [PeMS]; the merge lane carries (mainline + ramp) / 5
+  start: "05:00"
+  end: "10:00"
+  resolution_s: 60 # demand is held constant over each step of this length
+  congested_below_mps: 20.0 # station speed below 45 mph marks a congested interval [assumed]
+
+ablation:
+  controllers: [none, fixed, caltrans, alinea]
+  congestion: # the testable definition; evaluated at the mainline station upstream of the gore
+    speed_below_mps: 20.0 # a 30 s interval is congested below 45 mph, the PeMS boundary line [assumed],
+    occupancy_above: 0.158 # or above the model's critical occupancy (IDM capacity, 6 ft loop) [model];
+    min_intervals: 10 # persistent = at least 10 consecutive intervals, i.e. one 5-minute PeMS interval
+  variants: # every variant multiplies ramp and mainline demand by m(t); t runs 0..1 over the window
+    - {id: historical, kind: scale, factor: 1.0}
+    - {id: x0.5, kind: scale, factor: 0.5}
+    - {id: x0.75, kind: scale, factor: 0.75}
+    - {id: x0.9, kind: scale, factor: 0.9}
+    - {id: x1.1, kind: scale, factor: 1.1}
+    - {id: x1.25, kind: scale, factor: 1.25}
+    - {id: x1.5, kind: scale, factor: 1.5}
+    - {id: x2, kind: scale, factor: 2.0}
+    - {id: x3, kind: scale, factor: 3.0}
+    - {id: x5, kind: scale, factor: 5.0}
+    - {id: x10, kind: scale, factor: 10.0}
+    - {id: log_2x, kind: log, final: 2.0} # m = 1 + (final-1) ln(1+9t)/ln(10): fast early, then flat
+    - {id: exp_2x, kind: exp, final: 2.0} # m = final^t: slow early, fast late
+    - {id: wave_10min, kind: sine, amplitude: 0.5, period_s: 600} # m = 1 + A sin(2 pi time/period)
+    - {id: wave_60min, kind: sine, amplitude: 0.5, period_s: 3600}
+    # Boundary check, not part of the demand ablation: the same demand with no downstream
+    # restriction, to see how much the imposed boundary drives the result.
+    - {id: free_exit_x1, kind: scale, factor: 1.0, free_exit: true}
+    - {id: free_exit_x1.25, kind: scale, factor: 1.25, free_exit: true}

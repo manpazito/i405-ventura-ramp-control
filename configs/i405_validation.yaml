@@ -1,0 +1,29 @@
+# System-level step of the calibration (D023, step 2): the site scenario driven by six
+# observed weekdays, three used in the calibration and three held out, for three values
+# of the acceleration `a`. Record and decision rule: experiments/calibration.md. Run:
+#   uv run arm-study --config configs/i405_validation.yaml --output results/validation
+#   uv run python scripts/validation_table.py results/validation/<timestamp>
+site: configs/i405.yaml
+seeds: [1, 2, 3, 4, 5]
+variants: [historical]
+controllers: [caltrans] # the kind of rule in the field; its plan values are [assumed]
+decision: {metric: served_pct, at_least: 1}
+cases: # a case is one observed day with one value of `a`; `split` is read by the table script
+  - {id: "2022-10-11 a=2.0", split: calibration, set: {micro.vehicle.idm.a_mps2: 2.0, demand.pems_file: data/interim/pems/station_5min_2022_10_11.csv}}
+  - {id: "2022-10-10 a=2.0", split: calibration, set: {micro.vehicle.idm.a_mps2: 2.0, demand.pems_file: data/interim/pems/station_5min_2022_10_10.csv}}
+  - {id: "2022-10-12 a=2.0", split: calibration, set: {micro.vehicle.idm.a_mps2: 2.0, demand.pems_file: data/interim/pems/station_5min_2022_10_12.csv}}
+  - {id: "2022-10-03 a=2.0", split: held_out, set: {micro.vehicle.idm.a_mps2: 2.0, demand.pems_file: data/interim/pems/station_5min_2022_10_03.csv}}
+  - {id: "2022-10-14 a=2.0", split: held_out, set: {micro.vehicle.idm.a_mps2: 2.0, demand.pems_file: data/interim/pems/station_5min_2022_10_14.csv}}
+  - {id: "2022-10-25 a=2.0", split: held_out, set: {micro.vehicle.idm.a_mps2: 2.0, demand.pems_file: data/interim/pems/station_5min_2022_10_25.csv}}
+  - {id: "2022-10-11 a=1.5", split: calibration, set: {micro.vehicle.idm.a_mps2: 1.5, demand.pems_file: data/interim/pems/station_5min_2022_10_11.csv}}
+  - {id: "2022-10-10 a=1.5", split: calibration, set: {micro.vehicle.idm.a_mps2: 1.5, demand.pems_file: data/interim/pems/station_5min_2022_10_10.csv}}
+  - {id: "2022-10-12 a=1.5", split: calibration, set: {micro.vehicle.idm.a_mps2: 1.5, demand.pems_file: data/interim/pems/station_5min_2022_10_12.csv}}
+  - {id: "2022-10-03 a=1.5", split: held_out, set: {micro.vehicle.idm.a_mps2: 1.5, demand.pems_file: data/interim/pems/station_5min_2022_10_03.csv}}
+  - {id: "2022-10-14 a=1.5", split: held_out, set: {micro.vehicle.idm.a_mps2: 1.5, demand.pems_file: data/interim/pems/station_5min_2022_10_14.csv}}
+  - {id: "2022-10-25 a=1.5", split: held_out, set: {micro.vehicle.idm.a_mps2: 1.5, demand.pems_file: data/interim/pems/station_5min_2022_10_25.csv}}
+  - {id: "2022-10-11 a=2.5", split: calibration, set: {micro.vehicle.idm.a_mps2: 2.5, demand.pems_file: data/interim/pems/station_5min_2022_10_11.csv}}
+  - {id: "2022-10-10 a=2.5", split: calibration, set: {micro.vehicle.idm.a_mps2: 2.5, demand.pems_file: data/interim/pems/station_5min_2022_10_10.csv}}
+  - {id: "2022-10-12 a=2.5", split: calibration, set: {micro.vehicle.idm.a_mps2: 2.5, demand.pems_file: data/interim/pems/station_5min_2022_10_12.csv}}
+  - {id: "2022-10-03 a=2.5", split: held_out, set: {micro.vehicle.idm.a_mps2: 2.5, demand.pems_file: data/interim/pems/station_5min_2022_10_03.csv}}
+  - {id: "2022-10-14 a=2.5", split: held_out, set: {micro.vehicle.idm.a_mps2: 2.5, demand.pems_file: data/interim/pems/station_5min_2022_10_14.csv}}
+  - {id: "2022-10-25 a=2.5", split: held_out, set: {micro.vehicle.idm.a_mps2: 2.5, demand.pems_file: data/interim/pems/station_5min_2022_10_25.csv}}

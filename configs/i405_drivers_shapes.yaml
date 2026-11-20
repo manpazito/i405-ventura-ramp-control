@@ -1,0 +1,16 @@
+# Follow-up to the driver-population study (D019): the three shapes at a wider spread.
+# Decided after the first run, in which the shapes did not differ at a spread of 11.5 %,
+# where a normal and a lognormal are almost the same curve. Desired speed stays fixed so
+# that the comparison is about car following, not about how slow the slowest driver on a
+# lane without passing is. Question, prediction and results: experiments/driver_populations.md.
+site: configs/i405.yaml
+seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+variants: [x0.9, free_exit_x1]
+controllers: [none]
+decision: {metric: congested_min, at_least: 5}
+contrasts: [[normal, uniform], [lognormal, uniform], [lognormal, normal]]
+cases:
+  - {id: fixed}
+  - {id: uniform, spread: {time_gap: 0.25, a: 0.25, b: 0.25}, shape: uniform} # spread [assumed]
+  - {id: normal, spread: {time_gap: 0.25, a: 0.25, b: 0.25}, shape: normal}
+  - {id: lognormal, spread: {time_gap: 0.25, a: 0.25, b: 0.25}, shape: lognormal}

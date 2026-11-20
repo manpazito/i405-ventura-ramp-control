@@ -1,0 +1,28 @@
+# Which driver trait carries the effect of drivers that differ, on the calibrated model.
+# One trait varied per case, at the spread of the `drivers_field` case of the rule ablation
+# (configs/i405_ablation.yaml), plus the three shapes at one spread. Question, predictions
+# and results: experiments/driver_traits.md. Sources of the spreads:
+# docs/research/driver_heterogeneity.md. Run:
+#   uv run arm-study --config configs/i405_driver_traits.yaml --output results/driver-traits
+site: configs/i405.yaml # the calibrated site scenario (D023)
+seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+variants: [historical] # the observed day
+controllers: [none] # the rule ablation already showed that these populations do not reorder the rules
+decision: {metric: congested_min, at_least: 5} # D016, as in every study
+contrasts: [[normal, uniform], [lognormal, uniform], [lognormal, normal]]
+cases:
+  - {id: fixed} # identical drivers: the calibrated baseline
+  - id: field # all six traits together: `drivers_field` of the rule ablation
+    spread: {v0: 0.10, time_gap: 0.20, a: 0.33, b: 0.33, s0: 0.48, b_safe: 0.25}
+    shape: {time_gap: lognormal, a: lognormal, b: lognormal, s0: lognormal, b_safe: lognormal}
+  # One trait at a time, with the spread and shape it has in `field`.
+  - {id: field_v0, spread: {v0: 0.10}} # normal
+  - {id: field_T, spread: {time_gap: 0.20}, shape: lognormal}
+  - {id: field_a, spread: {a: 0.33}, shape: lognormal}
+  - {id: field_b, spread: {b: 0.33}, shape: lognormal}
+  - {id: field_s0, spread: {s0: 0.48}, shape: lognormal}
+  - {id: field_b_safe, spread: {b_safe: 0.25}, shape: lognormal}
+  # The three shapes at one spread of 25 % on T, a and b (the follow-up of D019, now calibrated).
+  - {id: uniform, spread: {time_gap: 0.25, a: 0.25, b: 0.25}, shape: uniform}
+  - {id: normal, spread: {time_gap: 0.25, a: 0.25, b: 0.25}, shape: normal}
+  - {id: lognormal, spread: {time_gap: 0.25, a: 0.25, b: 0.25}, shape: lognormal}

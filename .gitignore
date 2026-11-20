@@ -1,0 +1,45 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Local tooling and credentials
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+.env
+.env.*
+/.aws/
+/.pems/
+
+# Data and generated results are opt-in; retain the empty structure.
+/data/raw/*
+!/data/raw/.gitkeep
+/data/interim/*
+!/data/interim/.gitkeep
+/data/processed/*
+!/data/processed/.gitkeep
+/data/external/*
+!/data/external/.gitkeep
+/results/*
+!/results/.gitkeep
+
+# Regenerate paper figures/tables from arm-merge; keep the editable manuscript.
+/docs/paper/generated/
+/docs/paper/*.aux
+/docs/paper/*.log
+/docs/paper/*.out
+/docs/paper/*.pdf
+/docs/mid_report/*.aux
+/docs/mid_report/*.log
+/docs/mid_report/*.out
+/docs/mid_report/*.fls
+/docs/mid_report/*.fdb_latexmk

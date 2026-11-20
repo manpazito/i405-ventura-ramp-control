@@ -1,0 +1,21 @@
+# Planning metadata only; no application consumes this file.
+project:
+  name: adaptive-ramp-metering
+  package: adaptive_ramp_metering
+  stage: site_case_study # calibrated site scenario and one-factor ablation (D023, D024)
+  course: UCLA CEE 281 - Traffic Engineering Systems Operations and Control
+  term: Fall 2026
+site:
+  description: I-405 southbound on-ramp at Ventura Boulevard and Sepulveda Boulevard (LA-405 PM 39.09)
+  locality: Sherman Oaks, Los Angeles, California
+  timezone: America/Los_Angeles
+  geometry_status: measured_from_project_sketch # not georeferenced; see docs/i405_ablation.md
+  detector_ids: {on_ramp: 716744, mainline: 717816} # PeMS District 7, metadata of 2022-07-15
+course:
+  final_pathway: traffic_signal_control # alternative: cav_control; required by the course guide
+  pathway_confirmed: false # its form for an individual project is unconfirmed (D020)
+  signal_scaffold_status: not_obtained
+ownership: individual # manpazito owns every component since 2026-11-18 (D020); forecasting is out of scope
+data:
+  acquisition_status: pems_october_2022_screened # see configs/pems.yaml, data/README.md
+  target_interval_s: 300 # PeMS station interval, not a control interval

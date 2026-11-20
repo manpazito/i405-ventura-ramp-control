@@ -1,0 +1,202 @@
+{
+  "dataset_id": "observed_pems_ventura_20221010_20221016_5min_v1",
+  "source_id": "pems_mainline+pems_ramp",
+  "agency": "Caltrans PeMS Data Clearinghouse, District 7 Station 5-Minute",
+  "data_origin": "observed (PeMS-imputed values retained and flagged)",
+  "coverage_local_dates": [
+    "2022-10-10",
+    "2022-10-16"
+  ],
+  "station_ids": [
+    716744,
+    717816,
+    765197
+  ],
+  "station_roles": {
+    "716744": {
+      "role": "on_ramp",
+      "label": "Ventura Blvd SB on-ramp"
+    },
+    "717816": {
+      "role": "mainline",
+      "label": "Ventura Blvd SB mainline"
+    },
+    "765197": {
+      "role": "off_ramp",
+      "label": "Ventura Blvd SB off-ramp",
+      "optional": true
+    }
+  },
+  "source_timezone": "America/Los_Angeles; source timestamp labels interval start",
+  "interval": "[start, end) 300 s",
+  "units": {
+    "count": "veh per 5 min (source Total Flow)",
+    "flow_veh_per_s": "count / 300",
+    "mean_speed_mps": "source Avg Speed mph * 0.44704; PeMS flow-weighted",
+    "occupancy_fraction": "source Avg Occupancy (fraction) unchanged",
+    "observed_fraction": "source % Observed / 100"
+  },
+  "quality_flag": "observed=100% observed; partially_observed; imputed=0% observed but value reported; missing=no value",
+  "output_file": "data/processed/pems/observed_pems_ventura_20221010_20221016_5min_v1.csv",
+  "output_sha256": "b4c26a2540a485a1c813fad281cce4ddb001c8ad92340e4afb305d20a3bc2d97",
+  "output_rows": 6048,
+  "source_files": [
+    {
+      "date": "2022-10-10",
+      "file_name": "d07_text_station_5min_2022_10_10.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447441&dnode=Clearinghouse",
+      "bytes": "27095611",
+      "sha256": "055eee88144adcb22ccefbddd3ef11bdd8a2446b7a75d8d12f591cfde16b01a0",
+      "retrieved_at_utc": "2026-11-08T06:35:19+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-11",
+      "file_name": "d07_text_station_5min_2022_10_11.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447500&dnode=Clearinghouse",
+      "bytes": "27201158",
+      "sha256": "ac9e4d5abab5518f8d348c6e332cea708411e65a62296e9620104ea49315975d",
+      "retrieved_at_utc": "2026-11-08T06:35:26+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-12",
+      "file_name": "d07_text_station_5min_2022_10_12.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447557&dnode=Clearinghouse",
+      "bytes": "27270204",
+      "sha256": "ab4d1d3c98540416dbed0b298224f115cbff996664b3e0b81134655c53f09083",
+      "retrieved_at_utc": "2026-11-08T06:35:33+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-13",
+      "file_name": "d07_text_station_5min_2022_10_13.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447614&dnode=Clearinghouse",
+      "bytes": "27325236",
+      "sha256": "c6accc907df71325561e6492c57d8240dd4a9b1e8927d0599e31a05644b15a02",
+      "retrieved_at_utc": "2026-11-08T06:35:39+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-14",
+      "file_name": "d07_text_station_5min_2022_10_14.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447671&dnode=Clearinghouse",
+      "bytes": "27550028",
+      "sha256": "46abc1e3cb269b1d250d35439a8b12e7538c10e221ea902943f0dd3216ef1f91",
+      "retrieved_at_utc": "2026-11-08T06:35:47+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-15",
+      "file_name": "d07_text_station_5min_2022_10_15.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447726&dnode=Clearinghouse",
+      "bytes": "27073810",
+      "sha256": "1934c04cd37fdd4efa020a9d64e54da8ea74a9e2d9e9a4d7a150951ec16e6bd8",
+      "retrieved_at_utc": "2026-11-08T06:45:18+00:00",
+      "error": ""
+    },
+    {
+      "date": "2022-10-16",
+      "file_name": "d07_text_station_5min_2022_10_16.txt.gz",
+      "status": "downloaded",
+      "url": "https://pems.dot.ca.gov/?download=447781&dnode=Clearinghouse",
+      "bytes": "26535789",
+      "sha256": "764c7324290950ea2d52a46655e96406bfd709cf7bdc6642d5d158948fedce0d",
+      "retrieved_at_utc": "2026-11-08T06:45:25+00:00",
+      "error": ""
+    }
+  ],
+  "config_snapshot": {
+    "district": 7,
+    "session_file": ".pems/storage-state.json",
+    "data_root": "data",
+    "stations": {
+      "716744": {
+        "role": "on_ramp",
+        "label": "Ventura Blvd SB on-ramp"
+      },
+      "717816": {
+        "role": "mainline",
+        "label": "Ventura Blvd SB mainline"
+      },
+      "765197": {
+        "role": "off_ramp",
+        "label": "Ventura Blvd SB off-ramp",
+        "optional": true
+      }
+    },
+    "corridor": {
+      "freeway": 405,
+      "direction": "S",
+      "abs_pm_min": 61.5,
+      "abs_pm_max": 64.0
+    },
+    "stages": {
+      "1": [
+        [
+          "2022-10-17",
+          "2022-10-21"
+        ]
+      ],
+      "2": [
+        [
+          "2022-10-03",
+          "2022-10-14"
+        ],
+        [
+          "2022-10-24",
+          "2022-10-31"
+        ]
+      ],
+      "3": [
+        [
+          "2023-10-16",
+          "2023-10-20"
+        ]
+      ],
+      "4": [
+        [
+          "2024-10-14",
+          "2024-10-18"
+        ]
+      ],
+      "5": [
+        [
+          "2025-10-13",
+          "2025-10-17"
+        ]
+      ]
+    },
+    "thresholds": {
+      "min_mean_observed_pct": 90,
+      "min_pct_intervals_ge90": 90,
+      "max_missing_pct": 5,
+      "max_speed_mph": 100,
+      "stuck_run_intervals": 6,
+      "required_roles": [
+        "on_ramp",
+        "mainline"
+      ]
+    },
+    "incident_dates": [
+      "2022-10-17",
+      "2022-10-18",
+      "2022-10-20"
+    ],
+    "download": {
+      "retries": 3,
+      "backoff_s": 10,
+      "timeout_s": 300
+    }
+  },
+  "code_version": "unknown",
+  "created_at_utc": "2026-11-08T06:46:32+00:00",
+  "license_note": "Caltrans data terms apply; session cookies never stored here",
+  "split_assignment": "unassigned"
+}

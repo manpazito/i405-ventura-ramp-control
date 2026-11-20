@@ -1,0 +1,52 @@
+# PeMS District 7 Station 5-Minute acquisition and screening settings.
+# Consumed by `uv run arm-pems` (src/adaptive_ramp_metering/data/pems.py).
+district: 7
+session_file: .pems/storage-state.json # written by `uv run pems-data auth`; never commit
+data_root: data
+
+# Team-reported station IDs (2026-11-07). `arm-pems inventory` checked 716744, 717816 and
+# 765197 against the PeMS metadata snapshot of 2022-07-15 (data/README.md).
+stations:
+  716744: {role: on_ramp, label: Ventura Blvd SB on-ramp}
+  717816: {role: mainline, label: Ventura Blvd SB mainline}
+  765197: {role: off_ramp, label: Ventura Blvd SB off-ramp, optional: true}
+  # Boundary candidates from the 2022 screening (data/README.md); roles
+  # outside required_roles, so ranking is unchanged. Downstream coverage is poor.
+  777066: {role: upstream_mainline, label: North of 101 SB mainline, optional: true}
+  765171: {role: upstream_mainline, label: Burbank 1 SB mainline, optional: true}
+  717809: {role: downstream_mainline, label: Valley Vista SB mainline, optional: true}
+  764754: {role: downstream_mainline, label: Woodcrest SB mainline, optional: true}
+
+# All stations matching this filter are inventoried and screened, whatever lane type.
+corridor:
+  freeway: 405
+  direction: S
+  abs_pm_min: 61.5
+  abs_pm_max: 64.0
+
+# Staged search. Each stage lists inclusive date ranges; only weekdays are scanned.
+# Stages 3-5 use the third full October week of each year for seasonal comparability;
+# edit freely, nothing else depends on these dates.
+stages:
+  1: [[2022-10-17, 2022-10-21]]
+  2: [[2022-10-03, 2022-10-14], [2022-10-24, 2022-10-31]]
+  3: [[2023-10-16, 2023-10-20]]
+  4: [[2024-10-14, 2024-10-18]]
+  5: [[2025-10-13, 2025-10-17]]
+
+thresholds:
+  min_mean_observed_pct: 90
+  min_pct_intervals_ge90: 90
+  max_missing_pct: 5
+  max_speed_mph: 100 # above this a 5-min station mean speed is flagged suspicious
+  stuck_run_intervals: 6 # identical nonzero flow for this many consecutive intervals
+  required_roles: [on_ramp, mainline] # roles that must all pass for a day to qualify
+
+# Dates reported by the team from PeMS incident listings (2026-11-07). Not verified by
+# this pipeline; days are flagged, never dropped.
+incident_dates: [2022-10-17, 2022-10-18, 2022-10-20]
+
+download:
+  retries: 3
+  backoff_s: 10
+  timeout_s: 300

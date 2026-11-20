@@ -1,0 +1,272 @@
+study:
+  site: configs/i405.yaml
+  seeds: &id001
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  shoulder_lane: 5
+  variants:
+  - historical
+  controllers:
+  - none
+  - fixed
+  - caltrans
+  - alinea
+  decision:
+    metric: congested_min
+    at_least: 5
+  rule_contrasts:
+  - - alinea
+    - caltrans
+  - - alinea
+    - fixed
+  - - caltrans
+    - fixed
+  cases:
+  - id: baseline
+  - id: demand_0.9
+    variant:
+      kind: scale
+      factor: 0.9
+  - id: demand_1.1
+    variant:
+      kind: scale
+      factor: 1.1
+  - id: ramp_0.75
+    variant:
+      kind: scale
+      factor: 1.0
+      ramp_factor: 0.75
+  - id: ramp_1.25
+    variant:
+      kind: scale
+      factor: 1.0
+      ramp_factor: 1.25
+  - id: mainline_0.75
+    variant:
+      kind: scale
+      factor: 1.0
+      mainline_factor: 0.75
+  - id: mainline_1.25
+    variant:
+      kind: scale
+      factor: 1.0
+      mainline_factor: 1.25
+  - id: shoulder_lane
+    variant:
+      kind: scale
+      factor: 1.0
+      mainline: shoulder_lane
+  - id: wave_10min
+    variant:
+      kind: sine
+      amplitude: 0.5
+      period_s: 600
+  - id: wave_60min
+    variant:
+      kind: sine
+      amplitude: 0.5
+      period_s: 3600
+  - id: free_exit
+    variant:
+      kind: scale
+      factor: 1.0
+      free_exit: true
+  - id: T_low
+    set:
+      micro.vehicle.idm.time_gap_s: 1.21
+  - id: T_high
+    set:
+      micro.vehicle.idm.time_gap_s: 1.81
+  - id: a_low
+    set:
+      micro.vehicle.idm.a_mps2: 2.0
+  - id: a_high
+    set:
+      micro.vehicle.idm.a_mps2: 3.0
+  - id: b_low
+    set:
+      micro.vehicle.idm.b_mps2: 1.0
+  - id: b_high
+    set:
+      micro.vehicle.idm.b_mps2: 3.0
+  - id: s0_low
+    set:
+      micro.vehicle.idm.s0_m: 1.0
+  - id: s0_high
+    set:
+      micro.vehicle.idm.s0_m: 3.0
+  - id: v0_low
+    set:
+      micro.mainline.desired_speed_mps: 26.2
+  - id: v0_high
+    set:
+      micro.mainline.desired_speed_mps: 32.0
+  - id: delta_4
+    set:
+      micro.vehicle.idm.delta: 4
+  - id: drivers_normal
+    spread:
+      v0: 0.1155
+      time_gap: 0.1155
+      a: 0.1155
+      b: 0.1155
+    shape: normal
+  - id: drivers_field
+    spread:
+      v0: 0.1
+      time_gap: 0.2
+      a: 0.33
+      b: 0.33
+      s0: 0.48
+      b_safe: 0.25
+    shape:
+      time_gap: lognormal
+      a: lognormal
+      b: lognormal
+      s0: lognormal
+      b_safe: lognormal
+  - id: detector_fault
+    variant:
+      kind: scale
+      factor: 1.0
+      detector_fault:
+        sensor_id: mainline_merge
+        from_s: 5400
+        until_s: 9000
+  - id: alinea_gain_half
+    set:
+      micro.control.alinea.gain_veh_per_s_per_occupancy: 0.75
+  - id: alinea_gain_double
+    set:
+      micro.control.alinea.gain_veh_per_s_per_occupancy: 3.0
+  - id: alinea_target_low
+    set:
+      micro.control.alinea.target_occupancy: 0.126
+  - id: alinea_target_high
+    set:
+      micro.control.alinea.target_occupancy: 0.19
+  - id: alinea_no_queue_rule
+    set:
+      micro.control.queue_target_veh: 100000
+  - id: caltrans_early
+    set:
+      micro.control.caltrans.occupancy:
+      - 0.03
+      - 0.12
+  - id: caltrans_late
+    set:
+      micro.control.caltrans.occupancy:
+      - 0.08
+      - 0.32
+  - id: caltrans_no_override
+    set:
+      micro.control.caltrans.queue_occupancy: 1.01
+  - id: fixed_6_per_min
+    set:
+      micro.control.fixed_rate_veh_per_s: 0.2
+  - id: fixed_12_per_min
+    set:
+      micro.control.fixed_rate_veh_per_s: 0.4
+site:
+  micro:
+    schema_version: ramp-micro-v1
+    duration_s: 18000
+    step_s: 0.5
+    snapshot_interval_s: 30
+    seeds: *id001
+    vehicle:
+      length_m: 5.0
+      idm:
+        a_mps2: 2.5
+        b_mps2: 2.0
+        time_gap_s: 1.51
+        s0_m: 2.0
+        delta: 20
+    lane_change:
+      zone_m: 70
+      b_safe_mps2: 4.0
+    ramp:
+      sections:
+      - id: approach
+        lanes: 3
+        length_m: 95
+        desired_speed_mps: 11
+      - id: loop
+        lanes: 3
+        length_m: 48
+        desired_speed_mps: 7
+      - id: return_leg
+        lanes: 2
+        length_m: 30
+        desired_speed_mps: 12
+      - id: acceleration
+        lanes: 1
+        length_m: 85
+        desired_speed_mps: 29.1
+    mainline:
+      upstream_length_m: 298
+      downstream_length_m: 235
+      desired_speed_mps: 29.1
+    meter:
+      stop_line_m: 72.5
+      release_window_m: 12
+    detectors:
+      interval_s: 30
+      loop_length_m: 1.83
+      ramp_entry_m: 18
+      meter_passage_m: 76
+      merge_area_m: -30
+      mainline_upstream_m: -125
+    control:
+      interval_s: 30
+      min_rate_veh_per_s: 0.13333333
+      max_rate_veh_per_s: 0.5
+      fixed_rate_veh_per_s: 0.26666667
+      alinea:
+        gain_veh_per_s_per_occupancy: 1.5
+        target_occupancy: 0.158
+      queue_target_veh: 20
+      fault_hold_s: 60
+      caltrans:
+        metered_lanes: 2
+        levels: 15
+        occupancy:
+        - 0.05
+        - 0.2
+        rate_veh_per_h_per_lane:
+        - 900
+        - 240
+        queue_occupancy: 0.5
+        queue_step_veh_per_h_per_lane: 120
+  demand:
+    pems_file: data/interim/pems/station_5min_2022_10_11.csv
+    ramp_station: 716744
+    mainline_station: 717816
+    mainline_lanes: 5
+    start: 05:00
+    end: '10:00'
+    resolution_s: 60
+    congested_below_mps: 20.0
+    shoulder_lane: 5
+  ablation:
+    controllers:
+    - none
+    - fixed
+    - caltrans
+    - alinea
+    congestion:
+      speed_below_mps: 20.0
+      occupancy_above: 0.158
+      min_intervals: 10
+    variants:
+    - id: historical
+      kind: scale
+      factor: 1.0

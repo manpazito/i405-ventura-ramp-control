@@ -1,0 +1,350 @@
+{
+ "schema_version": "i405-demand-ablation-v1",
+ "origin": "simulated from observed PeMS demand; uncalibrated model",
+ "created_utc": "2026-11-19T18:26:07.517036+00:00",
+ "config": {
+  "micro": {
+   "schema_version": "ramp-micro-v1",
+   "duration_s": 18000,
+   "step_s": 0.5,
+   "snapshot_interval_s": 30,
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "vehicle": {
+    "length_m": 5.0,
+    "idm": {
+     "a_mps2": 2.0,
+     "b_mps2": 2.0,
+     "time_gap_s": 1.0,
+     "s0_m": 2.0,
+     "delta": 4
+    }
+   },
+   "lane_change": {
+    "zone_m": 70,
+    "b_safe_mps2": 4.0
+   },
+   "ramp": {
+    "sections": [
+     {
+      "id": "approach",
+      "lanes": 3,
+      "length_m": 95,
+      "desired_speed_mps": 11
+     },
+     {
+      "id": "loop",
+      "lanes": 3,
+      "length_m": 48,
+      "desired_speed_mps": 7
+     },
+     {
+      "id": "return_leg",
+      "lanes": 2,
+      "length_m": 30,
+      "desired_speed_mps": 12
+     },
+     {
+      "id": "acceleration",
+      "lanes": 1,
+      "length_m": 85,
+      "desired_speed_mps": 28.6
+     }
+    ]
+   },
+   "mainline": {
+    "upstream_length_m": 298,
+    "downstream_length_m": 235,
+    "desired_speed_mps": 28.6
+   },
+   "meter": {
+    "stop_line_m": 72.5,
+    "release_window_m": 12
+   },
+   "detectors": {
+    "interval_s": 30,
+    "loop_length_m": 1.83,
+    "ramp_entry_m": 18,
+    "meter_passage_m": 76,
+    "merge_area_m": -30,
+    "mainline_upstream_m": -125
+   },
+   "control": {
+    "interval_s": 30,
+    "min_rate_veh_per_s": 0.13333333,
+    "max_rate_veh_per_s": 0.5,
+    "fixed_rate_veh_per_s": 0.26666667,
+    "alinea": {
+     "gain_veh_per_s_per_occupancy": 1.5,
+     "target_occupancy": 0.26
+    },
+    "queue_target_veh": 20,
+    "fault_hold_s": 60,
+    "caltrans": {
+     "metered_lanes": 2,
+     "levels": 15,
+     "occupancy": [
+      0.05,
+      0.2
+     ],
+     "rate_veh_per_h_per_lane": [
+      900,
+      240
+     ],
+     "queue_occupancy": 0.5,
+     "queue_step_veh_per_h_per_lane": 120
+    }
+   }
+  },
+  "demand": {
+   "pems_file": "data/interim/pems/station_5min_2022_10_11.csv",
+   "ramp_station": 716744,
+   "mainline_station": 717816,
+   "mainline_lanes": 5,
+   "start": "05:00",
+   "end": "10:00",
+   "resolution_s": 60,
+   "congested_below_mps": 20.0,
+   "shoulder_lane": 5
+  },
+  "ablation": {
+   "controllers": [
+    "none",
+    "fixed",
+    "caltrans",
+    "alinea"
+   ],
+   "congestion": {
+    "speed_below_mps": 20.0,
+    "occupancy_above": 0.26,
+    "min_intervals": 10
+   },
+   "variants": [
+    {
+     "id": "lim_r1_m1",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.0,
+     "mainline_factor": 1.0
+    },
+    {
+     "id": "lim_r1_m0.75",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.0,
+     "mainline_factor": 0.75
+    },
+    {
+     "id": "lim_r1_m1.25",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.0,
+     "mainline_factor": 1.25
+    },
+    {
+     "id": "lim_r1_mlane5",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.0,
+     "mainline": "shoulder_lane"
+    },
+    {
+     "id": "lim_r0.75_m0.75",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 0.75,
+     "mainline_factor": 0.75
+    },
+    {
+     "id": "lim_r0.75_m1",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 0.75,
+     "mainline_factor": 1.0
+    },
+    {
+     "id": "lim_r0.75_m1.25",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 0.75,
+     "mainline_factor": 1.25
+    },
+    {
+     "id": "lim_r0.75_mlane5",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 0.75,
+     "mainline": "shoulder_lane"
+    },
+    {
+     "id": "lim_r1.25_m0.75",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.25,
+     "mainline_factor": 0.75
+    },
+    {
+     "id": "lim_r1.25_m1",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.25,
+     "mainline_factor": 1.0
+    },
+    {
+     "id": "lim_r1.25_m1.25",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.25,
+     "mainline_factor": 1.25
+    },
+    {
+     "id": "lim_r1.25_mlane5",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.25,
+     "mainline": "shoulder_lane"
+    },
+    {
+     "id": "free_r1_m1",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.0,
+     "mainline_factor": 1.0,
+     "free_exit": true
+    },
+    {
+     "id": "free_r1_m0.75",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.0,
+     "mainline_factor": 0.75,
+     "free_exit": true
+    },
+    {
+     "id": "free_r1_m1.25",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.0,
+     "mainline_factor": 1.25,
+     "free_exit": true
+    },
+    {
+     "id": "free_r1_mlane5",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.0,
+     "mainline": "shoulder_lane",
+     "free_exit": true
+    },
+    {
+     "id": "free_r0.75_m0.75",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 0.75,
+     "mainline_factor": 0.75,
+     "free_exit": true
+    },
+    {
+     "id": "free_r0.75_m1",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 0.75,
+     "mainline_factor": 1.0,
+     "free_exit": true
+    },
+    {
+     "id": "free_r0.75_m1.25",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 0.75,
+     "mainline_factor": 1.25,
+     "free_exit": true
+    },
+    {
+     "id": "free_r0.75_mlane5",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 0.75,
+     "mainline": "shoulder_lane",
+     "free_exit": true
+    },
+    {
+     "id": "free_r1.25_m0.75",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.25,
+     "mainline_factor": 0.75,
+     "free_exit": true
+    },
+    {
+     "id": "free_r1.25_m1",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.25,
+     "mainline_factor": 1.0,
+     "free_exit": true
+    },
+    {
+     "id": "free_r1.25_m1.25",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.25,
+     "mainline_factor": 1.25,
+     "free_exit": true
+    },
+    {
+     "id": "free_r1.25_mlane5",
+     "kind": "scale",
+     "factor": 1.0,
+     "ramp_factor": 1.25,
+     "mainline": "shoulder_lane",
+     "free_exit": true
+    }
+   ],
+   "decision": {
+    "congested_min": 5,
+    "ramp_exits_pct": 2
+   },
+   "contrasts": [
+    [
+     "lim_r1_m1.25",
+     "lim_r1_m1"
+    ],
+    [
+     "lim_r1.25_mlane5",
+     "lim_r1_mlane5"
+    ],
+    [
+     "free_r1_m1.25",
+     "free_r1_m1"
+    ],
+    [
+     "free_r1.25_mlane5",
+     "free_r1_mlane5"
+    ]
+   ]
+  },
+  "site": "configs/i405.yaml"
+ },
+ "source_sha256": {
+  "config": "efcef2c211c9e8704c15a6c75d71dc6c45bc7311d3ee5a5e2cadf43ea63bcc32",
+  "pems_extract": "c31657ac24e883f40d66e25c556e30d813d2e292501c8569abd6418a29efcd70",
+  "ablation.py": "7c208e8d8eabab1ffb8de795fcaf2af08cbb0aaf937274a12cfccc25919a6d56",
+  "micro.py": "6392d21bb7ac25234bb25b335a1732f479a3875d1c05f1283675c6056b1b57e8",
+  "metering.py": "669dd665408d851dc5fc32270625c1f0203f6a3af5e8102d6d762f095df4fa4a",
+  "site_config": "09c0f37ec591ef19775b82e8de465b91295395d4ee53a0628bb46eafe857c22c"
+ },
+ "git_revision": "53ead2b04b8221923c058b31bcd46b9af49b426a",
+ "python_version": "3.14.10",
+ "runs": 960
+}

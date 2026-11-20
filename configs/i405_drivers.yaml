@@ -1,0 +1,32 @@
+# Driver-population study (D019): the site scenario of configs/i405.yaml under different
+# driver populations. Question, predictions and results: experiments/driver_populations.md.
+# Where each spread and shape comes from: docs/research/driver_heterogeneity.md. Labels:
+#   [SUMO]       default of Eclipse SUMO 1.28, checked by running it
+#   [KTH 2010]   Kesting, Treiber and Helbing (2010): uniform, independent, 80-120 % of the mean
+#   [observed]   spread across drivers measured in naturalistic or field studies at other sites
+#   [calibrated] spread of per-driver IDM calibrations at another site: an upper estimate
+#   [assumed]    project choice
+# A spread is a coefficient of variation (sd / fixed value); every shape reproduces it exactly.
+site: configs/i405.yaml # geometry, demand, boundary and controllers come from the site scenario
+seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+variants: [x0.9, historical, free_exit_x1] # near capacity, the observed day, and the observed day without the downstream restriction
+controllers: [none, alinea]
+decision: {metric: congested_min, at_least: 5} # D016: a difference counts when its 95 % interval excludes zero and its mean is at least 5 min
+contrasts: [[normal, uniform], [lognormal, uniform], [lognormal, normal]] # shapes at equal mean and spread; every case is also compared with the first one
+cases:
+  - {id: fixed} # identical drivers: every result before this study
+  - {id: speed_only, spread: {v0: 0.10}} # [SUMO] desired speed only, normal
+  # One set of spreads in three shapes. 0.1155 = 0.2 / sqrt(3): a uniform spread of 80-120 %. [KTH 2010]
+  - {id: uniform, spread: {v0: 0.1155, time_gap: 0.1155, a: 0.1155, b: 0.1155}, shape: uniform}
+  - {id: normal, spread: {v0: 0.1155, time_gap: 0.1155, a: 0.1155, b: 0.1155}, shape: normal}
+  - {id: lognormal, spread: {v0: 0.1155, time_gap: 0.1155, a: 0.1155, b: 0.1155}, shape: lognormal}
+  - {id: merge_only, spread: {b_safe: 0.25}, shape: lognormal} # lane-changing preference alone; lognormal as for critical gaps, spread [assumed]
+  - id: empirical # spreads and shapes from field and calibration studies
+    spread:
+      v0: 0.10 # [SUMO]; 0.15 [observed] would put the slowest drivers under the 20 m/s congestion line on a lane without passing
+      time_gap: 0.20 # [observed] 98 drivers, lognormal across drivers (Huang, Zhang and Peng 2018)
+      a: 0.33 # [calibrated] 42 drivers (Zhu, Wang, Tarko and Fang 2018)
+      b: 0.33 # [assumed] as for a; the calibrated 0.89 sits on the search bounds
+      s0: 0.48 # [observed] 1,140 car-car standstill distances on Iowa freeways, right-skewed (Dong et al. 2015)
+      b_safe: 0.25 # [assumed]
+    shape: {time_gap: lognormal, a: lognormal, b: lognormal, s0: lognormal, b_safe: lognormal}
